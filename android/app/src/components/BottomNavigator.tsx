@@ -3,10 +3,11 @@ import { Image, TouchableOpacity, View, Text} from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import MessageCountBadge from './messagecountbadge'
 import {images} from '../../src/constants/images';
-
+import { useMessageStore } from './MessageList';
 export default function BottomNavigator({ state, descriptors, navigation }: BottomTabBarProps) {
+  const total = useMessageStore((state: any) => state.totalMessages);
 
-  const totalMessages = 0; // You can get this from props or context
+
 
   const tabItems = [
     { route: 'Wallet', icon: images.wallet, name: 'Wallet'},
@@ -53,9 +54,9 @@ export default function BottomNavigator({ state, descriptors, navigation }: Bott
                   tintColor: isFocused ? 'white' : undefined,
                 }}
               />
-              {item.iconn && totalMessages > 0 && (
+              {item.iconn && total > 0 && (
                 <View style={{ position: 'absolute', top: -15, right: -15 }}>
-                <MessageCountBadge />
+                  <MessageCountBadge/>
                 </View>
               )}
             </View>
