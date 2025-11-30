@@ -13,7 +13,7 @@ type TabNavProp = NativeStackNavigationProp<MessageStackParamList>;
 
 
 
-export default function MessageScreen() {
+export default function Message_Screen() {
   const navigation = useNavigation<TabNavProp>();
 
   const [dimensions, setDimensions] = useState({

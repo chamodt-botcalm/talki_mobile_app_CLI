@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Animated, BackHandler, Dimensions, ScrollView, View, Image, Pressable, TouchableOpacity } from 'react-native';
 import StoryView from '../../components/StoryView';
-import MessageScreen from '../message/Message Screen';
+import MessageScreen from '../message/Message_Screen';
 import PullBar from '../../components/pullbar'
 import { TabParamList } from '../../../../../src/types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';

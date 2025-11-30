@@ -89,7 +89,7 @@ const InfoEdit = () => {
                 paddingHorizontal: scaleWidth(14),
                 marginTop: scaleHeight(73)
             }}>
-                <Pressable onPress={() => navigation.navigate('ChatScreen')}>
+                <Pressable onPress={() => navigation.goBack()}>
                     <View style={{
                         flexDirection: 'row',
                         alignItems: 'center',

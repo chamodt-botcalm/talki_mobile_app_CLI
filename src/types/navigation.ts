@@ -1,12 +1,15 @@
+import { NavigatorScreenParams } from '@react-navigation/native';
+
 export type RootStackParamList = {
   Welcome: undefined;
   ConnectWallet: undefined;
   UserAccount: undefined;
   MainTabs: undefined;
-  MessageStack: undefined;
+  MessageStack: NavigatorScreenParams<MessageStackParamList>;
   SettingsInfo: undefined;
   Sticker: undefined;
   Notifications: undefined;
+  Privacy: undefined;
 };
 
 export type TabParamList = {

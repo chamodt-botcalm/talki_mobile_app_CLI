@@ -10,13 +10,14 @@ import Notifications from '../../android/app/src/screens/Settings/Notifications'
 import TabNavigator from './TabNavigator';
 import MessageStackNavigator from './MessageStackNavigator';
 import { RootStackParamList } from '../types/navigation';
+import Privacy from '../../android/app/src/screens/Settings/Privacy';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator 
+      <Stack.Navigator
         initialRouteName="Welcome"
         screenOptions={{ headerShown: false }}
       >
@@ -28,6 +29,8 @@ export default function AppNavigator() {
         <Stack.Screen name="SettingsInfo" component={SettingsInfo} />
         <Stack.Screen name="Sticker" component={Stickers} />
         <Stack.Screen name="Notifications" component={Notifications} />
+        <Stack.Screen name="Privacy" component={Privacy} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

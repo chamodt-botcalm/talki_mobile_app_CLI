@@ -67,5 +67,9 @@ export const images = {
   user: require('../../../../assets/images/user.png'),
   video: require('../../../../assets/images/video.png'),
   videoo: require('../../../../assets/images/videoo.png'),
-  wallet: require('../../../../assets/images/wallet.png')
+  wallet: require('../../../../assets/images/wallet.png'),
+  ActiveSessions: require('../../../../assets/images/ActiveSessions.png'),
+  BlockedUsers: require('../../../../assets/images/BlockedUsers.png'),
+  FaceID: require('../../../../assets/images/FaceID.png'),
+  TwoStepVerification: require('../../../../assets/images/Two-StepVerification.png')
 };

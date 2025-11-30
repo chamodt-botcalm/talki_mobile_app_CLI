@@ -262,7 +262,7 @@ export default function WelcomePage() {
                                         height: scaleHeight(60),
                                     },
                                 ]}
-                                onPress={() => navigation.navigate('MainTabs')}
+                                onPress={() => navigation.navigate('UserAccount')}
                             >
                                 <Text style={[styles.buttonText, { fontSize: scale * 16 }]}>
                                     Create Wallet

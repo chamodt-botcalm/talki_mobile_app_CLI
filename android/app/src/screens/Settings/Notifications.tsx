@@ -10,6 +10,7 @@ import PullBar from '../../components/pullbar'
 import { images } from '../../constants/images'
 
 
+
 const Notifications = () => {
     const navigation = useNavigation();
     
@@ -101,7 +102,7 @@ const Notifications = () => {
             alignItems: 'center',
             justifyContent: 'space-between',
             paddingHorizontal: scaleWidth(14),
-            marginTop: scaleHeight(73),
+            marginTop: scaleWidth(73),
         },
         headerText: {
             color: '#D9FD00',

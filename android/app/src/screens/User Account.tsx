@@ -225,7 +225,7 @@ export default function UserAccount() {
                                 height: isTablet ? scaleHeight(60) : scaleHeight(50),
                                 borderRadius: scale * 5,
                                 justifyContent: 'center'
-                            }} onPress={() => navigation.navigate('SettingsInfo')}
+                            }} onPress={() => navigation.navigate('MainTabs')}
                         >
                             <Text style={{ color: 'black', fontSize: scale * 20, textAlign: 'center', fontFamily: 'Inter', }}>
                                 Done
