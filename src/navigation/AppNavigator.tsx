@@ -11,6 +11,8 @@ import TabNavigator from './TabNavigator';
 import MessageStackNavigator from './MessageStackNavigator';
 import { RootStackParamList } from '../types/navigation';
 import Privacy from '../../android/app/src/screens/Settings/Privacy';
+import Storage from '../../android/app/src/screens/Settings/Storage';
+import Apperance from '../../android/app/src/screens/Settings/Apperance';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -30,6 +32,9 @@ export default function AppNavigator() {
         <Stack.Screen name="Sticker" component={Stickers} />
         <Stack.Screen name="Notifications" component={Notifications} />
         <Stack.Screen name="Privacy" component={Privacy} />
+        <Stack.Screen name="Storage" component={Storage} />
+        <Stack.Screen name="Apperance" component={Apperance} />
+
 
       </Stack.Navigator>
     </NavigationContainer>

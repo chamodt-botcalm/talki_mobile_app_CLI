@@ -165,8 +165,8 @@ const SettingsScreen = () => {
   const settingsOptions = [
     { icon: images.notification, title: 'Notifications and Sounds', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Notifications' },
     { icon: images.privacy, title: 'Privacy and Security', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Privacy' },
-    { icon: images.storage, title: 'Data and Storage', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: '' },
-    { icon: images.appearance, title: 'Appearance', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: '' },
+    { icon: images.storage, title: 'Data and Storage', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Storage' },
+    { icon: images.appearance, title: 'Appearance', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Apperance' },
     { icon: images.language, title: 'Language', link: '' },
   ];
 

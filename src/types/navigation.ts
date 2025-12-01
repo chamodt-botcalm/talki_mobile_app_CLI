@@ -10,6 +10,8 @@ export type RootStackParamList = {
   Sticker: undefined;
   Notifications: undefined;
   Privacy: undefined;
+  Storage: undefined;
+  Apperance:undefined;
 };
 
 export type TabParamList = {
