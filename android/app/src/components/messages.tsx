@@ -206,8 +206,8 @@ const Messages = () => {
               <View style={{
                 flexDirection: 'row',
                 position: 'absolute',
-                right:message.sender==='me'? 10:15,
                 bottom:3,
+                right:message.sender==='me'? 10:15,
                 alignItems: 'center',
                 gap: 5
               }}>

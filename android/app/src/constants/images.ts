@@ -71,5 +71,8 @@ export const images = {
   ActiveSessions: require('../../../../assets/images/ActiveSessions.png'),
   BlockedUsers: require('../../../../assets/images/BlockedUsers.png'),
   FaceID: require('../../../../assets/images/FaceID.png'),
-  TwoStepVerification: require('../../../../assets/images/Two-StepVerification.png')
+  TwoStepVerification: require('../../../../assets/images/Two-StepVerification.png'),
+  greenti:require('../../../../assets/images/greenti.png'),
+  blackti:require('../../../../assets/images/blackti.png')
+
 };
