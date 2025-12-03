@@ -59,7 +59,7 @@ export const useMessageStore = create<MessageStore>((set) => ({
 
 const MessageList: React.FC<MessageListProps> = ({
   onChatSelect,
-  onTotalMessagesChange,
+  
 }) => {
   const navigation = useNavigation<CombinedNavigationProp>();
   const { setTotalMessages } = useMessageStore();
@@ -69,11 +69,8 @@ const MessageList: React.FC<MessageListProps> = ({
   const totalUnreadCount = messageData.reduce((sum, msg) => sum + msg.unreadCount, 0);
   
   useEffect(() => {
-    setTotalMessages(totalUnreadCount);
-    if (onTotalMessagesChange) {
-      onTotalMessagesChange(totalUnreadCount);
-    }
-  }, [totalUnreadCount, setTotalMessages, onTotalMessagesChange]);
+   setTotalMessages(totalUnreadCount)
+  }, [totalUnreadCount]);
 
 
   const [dimensions, setDimensions] = useState({

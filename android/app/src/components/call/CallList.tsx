@@ -114,7 +114,7 @@ const CallList = () => {
       type: 'Outgoing (2 min)',
       date: '10/13',
       image: images.im1,
-      category: 'outgoing'
+      category: 'missed'
     },
      {
       name: 'Joshua Lawrence',
@@ -135,7 +135,7 @@ const CallList = () => {
       type: 'Outgoing (2 min)',
       date: '10/13',
       image: images.im1,
-      category: 'outgoing'
+      category: 'incoming'
     },
      {
       name: 'Joshua Lawrence',

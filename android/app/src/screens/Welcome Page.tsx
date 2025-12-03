@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../src/types/navigation';
 import { images } from '../constants/images';
+import { scaleHeight } from '../constants/size';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -380,6 +381,7 @@ const styles = StyleSheet.create({
 
     rockImage: {
         position: 'absolute',
+        bottom:scaleHeight(318)
     },
 
     logoWrapper: {

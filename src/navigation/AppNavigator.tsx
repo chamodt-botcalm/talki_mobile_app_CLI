@@ -13,6 +13,7 @@ import { RootStackParamList } from '../types/navigation';
 import Privacy from '../../android/app/src/screens/Settings/Privacy';
 import Storage from '../../android/app/src/screens/Settings/Storage';
 import Apperance from '../../android/app/src/screens/Settings/Apperance';
+import Language from '../../android/app/src/screens/Settings/Language';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -34,7 +35,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Privacy" component={Privacy} />
         <Stack.Screen name="Storage" component={Storage} />
         <Stack.Screen name="Apperance" component={Apperance} />
-
+        <Stack.Screen name="Language" component={Language} />
 
       </Stack.Navigator>
     </NavigationContainer>

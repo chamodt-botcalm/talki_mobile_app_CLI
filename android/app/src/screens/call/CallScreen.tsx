@@ -2,7 +2,7 @@ import CallList from '../../components/call/CallList'
 import CallTabs from '../../components/call/CallTabs'
 import BlackBackground from '../../components/main/black'
 import WhiteBackground from '../../components/main/white'
-import PullBar from '../../components/profilepic'
+import PullBar from '../../components/pullbar'
 import { useNavigation } from '@react-navigation/native'
 import { useEffect, useState } from 'react'
 import { BackHandler, Dimensions, Image, StyleSheet, Text, View } from 'react-native'
@@ -99,7 +99,7 @@ const CallScreen = () => {
           </View>
         <WhiteBackground height={scaleHeight(811)}>
          <View style={{alignSelf:'center', marginTop:scaleHeight(11)}}>
-        <PullBar width={scaleWidth(62.5)} height={scaleHeight(6)} borderWidth={0}/></View>
+        <PullBar width={scaleWidth(62.5)} height={scaleHeight(6)}/></View>
           <CallList/>
         </WhiteBackground>
       </BlackBackground>

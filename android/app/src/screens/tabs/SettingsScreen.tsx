@@ -167,7 +167,7 @@ const SettingsScreen = () => {
     { icon: images.privacy, title: 'Privacy and Security', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Privacy' },
     { icon: images.storage, title: 'Data and Storage', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Storage' },
     { icon: images.appearance, title: 'Appearance', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Apperance' },
-    { icon: images.language, title: 'Language', link: '' },
+    { icon: images.language, title: 'Language', link: 'Language' },
   ];
 
   const MenuItem = ({ icon, title, stylee, mh, link }: { icon: any; title: string; stylee?: any; mh?: any; link?: string }) => {
