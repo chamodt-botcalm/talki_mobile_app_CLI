@@ -73,6 +73,9 @@ export const images = {
   FaceID: require('../../../../assets/images/FaceID.png'),
   TwoStepVerification: require('../../../../assets/images/Two-StepVerification.png'),
   greenti:require('../../../../assets/images/greenti.png'),
-  blackti:require('../../../../assets/images/blackti.png')
+  blackti:require('../../../../assets/images/blackti.png'),
+  search:require('../../../../assets/images/search.png'),
+  AddUser:require('../../../../assets/images/add-user.png'),
+  share:require('../../../../assets/images/share.png'),
 
 };
