@@ -13,6 +13,7 @@ export type RootStackParamList = {
   Storage: undefined;
   Apperance:undefined;
   Language: undefined;
+  Deposite: undefined;
 };
 
 export type TabParamList = {

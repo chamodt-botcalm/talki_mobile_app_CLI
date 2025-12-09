@@ -178,7 +178,7 @@ const SettingsScreen = () => {
             <SettingsScreenIcon link={icon} />
             <Text>{title}</Text>
           </View>
-          <Icon name="chevron-forward-outline" size={20} style={{ color: '#AEAEB2' }} />
+            <Image source={images.next} style={{ tintColor: '#AEAEB2', width: scaleWidth(8), height: scaleHeight(13) }} />
         </TouchableOpacity>
         <View style={[stylee, mh]} />
       </View>
@@ -193,8 +193,9 @@ const SettingsScreen = () => {
         <View style={[styles.row2, { gap: 10 }]}>
           <Image source={images.telephone}
             style={[styles.image2]} />
+            <TouchableOpacity onPress={()=>navigation.navigate('Deposite')}>
           <Image source={images.plu}
-            style={[styles.image2]} />
+            style={[styles.image2]} /></TouchableOpacity>
         </View>
       </View>
 
