@@ -77,5 +77,9 @@ export const images = {
   search:require('../../../../assets/images/search.png'),
   AddUser:require('../../../../assets/images/add-user.png'),
   share:require('../../../../assets/images/share.png'),
-
+  juliet:require('../../../../assets/images/juliet.jpg'),
+  cameraflip:require('../../../../assets/images/cameraflip.png'),
+  close:require('../../../../assets/images/close.png'),
+  mutespeaker:require('../../../../assets/images/mute-speaker.png'),
+  videocamera:require('../../../../assets/images/video-camera.png')
 };

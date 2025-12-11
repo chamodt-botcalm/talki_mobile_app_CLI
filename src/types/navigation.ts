@@ -14,6 +14,8 @@ export type RootStackParamList = {
   Apperance:undefined;
   Language: undefined;
   Deposite: undefined;
+  VideoRinging:undefined;
+  AudioRinging:undefined;
 };
 
 export type TabParamList = {

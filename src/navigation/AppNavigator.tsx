@@ -15,6 +15,8 @@ import Storage from '../../android/app/src/screens/Settings/Storage';
 import Apperance from '../../android/app/src/screens/Settings/Apperance';
 import Language from '../../android/app/src/screens/Settings/Language';
 import Deposite from '../../android/app/src/screens/deposit';
+import Video_Call_Ringing from '../../android/app/src/screens/Video-Call-Ringing';
+import Audio_Call_Ringing from '../../android/app/src/screens/Audio-Call-Ringing';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,7 +40,8 @@ export default function AppNavigator() {
         <Stack.Screen name="Apperance" component={Apperance} />
         <Stack.Screen name="Language" component={Language} />
         <Stack.Screen name="Deposite" component={Deposite} />
-
+        <Stack.Screen name="VideoRinging" component={Video_Call_Ringing} />
+        <Stack.Screen name="AudioRinging" component={Audio_Call_Ringing} />
 
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,21 +1,23 @@
-import { View, Text, Dimensions, Animated, BackHandler, Image, Pressable, ScrollView } from 'react-native'
+import { View, Modal, Text, Dimensions, StyleSheet, Animated, BackHandler, Image, Pressable, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { TabParamList } from '../../../../../src/types/navigation';
+import { TabParamList,RootStackParamList } from '../../../../../src/types/navigation';
 import { MessageStackParamList } from '../../../../../src/types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {CompositeNavigationProp} from '@react-navigation/native';
+import { CompositeNavigationProp } from '@react-navigation/native';
 import { images } from '../../constants/images';
 
-type TabNavProp = NativeStackNavigationProp<TabParamList>;
-type MessageStackNavProp = NativeStackNavigationProp<MessageStackParamList>;
-
-type NavigationProp = CompositeNavigationProp<TabNavProp, MessageStackNavProp>;
-
-
+type CombinedNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<RootStackParamList>,
+  CompositeNavigationProp<
+    NativeStackNavigationProp<TabParamList>,
+    NativeStackNavigationProp<MessageStackParamList>
+  >
+>;
 
 const InfoScreen = () => {
-  const navigation = useNavigation<NavigationProp>();
+  const [visible, setVisible] = useState(false);
+  const navigation = useNavigation<CombinedNavigationProp>();
 
   const [dimensions, setDimensions] = useState({
     width: Dimensions.get('window').width,
@@ -80,6 +82,52 @@ const InfoScreen = () => {
     dimensions.width / currentBaseWidth,
     dimensions.height / currentBaseHeight
   );
+  const styles = StyleSheet.create({
+    modalBackground: {
+      flex: 1,
+      backgroundColor: "rgba(0,0,0,0.5)",
+      justifyContent: 'flex-end',
+      alignItems: "center",
+
+    },
+    modalBox: {
+      width: scaleWidth(280),
+      backgroundColor: "white",
+      borderRadius: 12,
+      padding: scaleWidth(20),
+      alignItems: "center",
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: "600",
+      marginBottom: scaleHeight(15),
+      textAlign: "center",
+    },
+    modalButtonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      width: "100%",
+      marginTop: scaleHeight(20),
+    },
+    modalButton: {
+      paddingVertical: scaleHeight(10),
+      paddingHorizontal: scaleWidth(20),
+      borderRadius: 8,
+      minWidth: scaleWidth(80),
+      alignItems: "center",
+    },
+    callButton: {
+      backgroundColor: "#037EE5",
+    },
+    cancelButton: {
+      backgroundColor: "#FE3B30",
+    },
+    buttonText: {
+      color: "white",
+      fontSize: 16,
+      fontWeight: "500",
+    },
+  });
 
   return (
     <View style={{
@@ -121,10 +169,10 @@ const InfoScreen = () => {
           fontSize: 18
         }}>Info</Text>
         <Pressable onPress={() => navigation.navigate('InfoEdit')}>
-        <Text style={{
-          color: '#D9FD00',
-          fontSize: 18
-        }}>Edit</Text>
+          <Text style={{
+            color: '#D9FD00',
+            fontSize: 18
+          }}>Edit</Text>
         </Pressable>
       </View>
 
@@ -195,14 +243,15 @@ const InfoScreen = () => {
                   }}>Online</Text>
                 </View>
               </View>
-              <Image source={images.telephone}
-                style={{
-                  width: scaleWidth(22),
-                  height: scaleHeight(22),
-                  tintColor: '#037EE5',
-                  resizeMode: 'contain'
-                }}
-              />
+              <TouchableOpacity onPress={() => setVisible(true)}>
+                <Image source={images.telephone}
+                  style={{
+                    width: scaleWidth(22),
+                    height: scaleHeight(22),
+                    tintColor: '#037EE5',
+                    resizeMode: 'contain'
+                  }}
+                /></TouchableOpacity>
             </View>
           </View>
 
@@ -506,11 +555,31 @@ const InfoScreen = () => {
         </ScrollView>
       </Animated.View>
 
-
+      {/* Call Modal */}
+      <Modal
+        visible={visible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalBox}>
+            <TouchableOpacity onPress={()=>navigation.navigate('VideoRinging')}>
+              <Text style={styles.modalTitle}>Video Call Ringing</Text></TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('AudioRinging')}>
+              <Text style={styles.modalTitle}>Audio Call Ringing</Text></TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.modalTitle}>Incoming Video Call </Text></TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.modalTitle}>Incoming Audio Calling</Text></TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.modalTitle}>Video Call Answer</Text></TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.modalTitle}>Audio Call Answer</Text></TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
-
-
-
   )
 }
 
