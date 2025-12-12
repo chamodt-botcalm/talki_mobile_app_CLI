@@ -1,8 +1,8 @@
 import { View, Modal, Text, Dimensions, StyleSheet, Animated, BackHandler, Image, Pressable, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { TabParamList,RootStackParamList } from '../../../../../src/types/navigation';
-import { MessageStackParamList } from '../../../../../src/types/navigation';
+import { TabParamList,RootStackParamList } from '../../types/navigation';
+import { MessageStackParamList } from '../../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { images } from '../../constants/images';
@@ -568,13 +568,13 @@ const InfoScreen = () => {
               <Text style={styles.modalTitle}>Video Call Ringing</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>navigation.navigate('AudioRinging')}>
               <Text style={styles.modalTitle}>Audio Call Ringing</Text></TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('IncomingVideoCall')}>
               <Text style={styles.modalTitle}>Incoming Video Call </Text></TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('IncomingAudiooCall')}>
               <Text style={styles.modalTitle}>Incoming Audio Calling</Text></TouchableOpacity>
             <TouchableOpacity>
               <Text style={styles.modalTitle}>Video Call Answer</Text></TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('AudioCallAnswer')}>
               <Text style={styles.modalTitle}>Audio Call Answer</Text></TouchableOpacity>
           </View>
         </View>

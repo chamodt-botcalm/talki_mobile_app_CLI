@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react'
-import { TabParamList } from '../../../../src/types/navigation';
+import { TabParamList } from '../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { MessageStackParamList } from '../types/navigation';
-import Message_Screen from '../../android/app/src/screens/message/Message_Screen';
-import InfoScreen from '../../android/app/src/screens/message/info Screen';
-import InfoEdit from '../../android/app/src/screens/message/info Edit';
+import Message_Screen from '../screens/message/Message_Screen';
+import InfoScreen from '../screens/message/info Screen';
+import InfoEdit from '../screens/message/info Edit';
 
 const Stack = createNativeStackNavigator<MessageStackParamList>();
 

@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../../src/types/navigation';
+import { RootStackParamList } from '../types/navigation';
 import { images } from '../constants/images';
 import { scaleHeight } from '../constants/size';
 

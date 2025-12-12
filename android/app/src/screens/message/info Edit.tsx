@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Image, Pressable, Animated, Dimensions, BackHandler } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { TabParamList } from '../../../../../src/types/navigation';
+import { TabParamList } from '../../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../../constants/images';
 

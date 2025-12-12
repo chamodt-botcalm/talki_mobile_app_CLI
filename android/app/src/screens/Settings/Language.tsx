@@ -11,7 +11,7 @@ import {
 import BlackBackground from '../../components/main/black';
 import WhiteBackground from '../../components/main/white';
 import { useBack, scaleHeight, scaleWidth } from '../../constants/size';
-import { RootStackParamList } from '../../../../../src/types/navigation';
+import { RootStackParamList } from '../../types/navigation';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { images } from '../../constants/images';
 import PullBar from '../../components/pullbar';

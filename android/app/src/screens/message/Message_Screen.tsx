@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import MessageBottom from '../../components/messageBottom';
 import MessageBottomTab from '../../components/messageBottomTab';
 import Messages from '../../components/messages';
-import { MessageStackParamList } from '../../../../../src/types/navigation';
+import { MessageStackParamList } from '../../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../../constants/images';
 

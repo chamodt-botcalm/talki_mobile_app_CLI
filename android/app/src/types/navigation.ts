@@ -11,11 +11,14 @@ export type RootStackParamList = {
   Notifications: undefined;
   Privacy: undefined;
   Storage: undefined;
-  Apperance:undefined;
+  Apperance: undefined;
   Language: undefined;
   Deposite: undefined;
-  VideoRinging:undefined;
-  AudioRinging:undefined;
+  VideoRinging: undefined;
+  AudioRinging: undefined;
+  IncomingVideoCall: undefined;
+  IncomingAudiooCall: undefined;
+  AudioCallAnswer:undefined;
 };
 
 export type TabParamList = {

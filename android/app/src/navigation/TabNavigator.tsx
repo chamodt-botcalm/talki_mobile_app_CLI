@@ -2,15 +2,15 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useWindowDimensions } from 'react-native';
 import { TabParamList } from '../types/navigation';
-import WalletScreen from '../../android/app/src/screens/tabs/WalletScreen';
-import ChatScreen from '../../android/app/src/screens/tabs/ChatScreen';
-import ContactScreen from '../../android/app/src/screens/tabs/ContactScreen';
-import SettingsScreen from '../../android/app/src/screens/tabs/SettingsScreen';
-import CallScreen from '../../android/app/src/screens/call/CallScreen';
-import BottomNavigator from '../../android/app/src/components/BottomNavigator';
-import MessageBottomTab from '../../android/app/src/components/messageBottomTab';
+import WalletScreen from '../screens/tabs/WalletScreen';
+import ChatScreen from '../screens/tabs/ChatScreen';
+import ContactScreen from '../screens/tabs/ContactScreen';
+import SettingsScreen from '../screens/tabs/SettingsScreen';
+import CallScreen from '../screens/call/CallScreen';
+import BottomNavigator from '../components/BottomNavigator';
+import MessageBottomTab from '../components/messageBottomTab';
 
-const Tab = createBottomTabNavigator<TabParamList>();
+const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
   const { width, height } = useWindowDimensions();

@@ -81,5 +81,9 @@ export const images = {
   cameraflip:require('../../../../assets/images/cameraflip.png'),
   close:require('../../../../assets/images/close.png'),
   mutespeaker:require('../../../../assets/images/mute-speaker.png'),
-  videocamera:require('../../../../assets/images/video-camera.png')
+  videocamera:require('../../../../assets/images/video-camera.png'),
+  volume:require('../../../../assets/images/volume.png'),
+  blur:require('../../../../assets/images/blur.png'),
+  julietr:require('../../../../assets/images/julietr.jpg'),
+  remind:require('../../../../assets/images/remind.png')
 };

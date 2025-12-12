@@ -5,7 +5,7 @@ import { Animated, BackHandler, Dimensions, ScrollView, View, Image, Pressable, 
 import StoryView from '../../components/StoryView';
 import MessageScreen from '../message/Message_Screen';
 import PullBar from '../../components/pullbar'
-import { TabParamList } from '../../../../../src/types/navigation';
+import { TabParamList } from '../../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../../constants/images';
 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Animated, BackHandler, Dimensions, Image, Pressable, Text, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import BottomNavigator from '../components/BottomNavigator';
-import { RootStackParamList } from '../../../../src/types/navigation';
+import { RootStackParamList } from '../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../constants/images';
 

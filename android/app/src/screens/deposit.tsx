@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   View,
   Text,
@@ -8,26 +8,13 @@ import {
   Platform,
   StatusBar,
   TextInput,
-  Keyboard,
 } from 'react-native'
 import { scaleWidth, scaleHeight } from '../constants/size'
 
 const Deposite = () => {
   const [amount, setAmount] = useState('0.20')
   const [selectedPercentage, setSelectedPercentage] = useState<number | null>(null)
-  const [keyboardHeight, setKeyboardHeight] = useState(0)
   const textInputRef = useRef<TextInput>(null)
-
-  useEffect(() => {
-
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardHeight(0)
-    })
-
-    return () => {
-      keyboardDidHideListener.remove()
-    }
-  }, [])
 
   const percentages = ['0 %', '25 %', '50 %', '75 %', '100 %']
 
@@ -50,7 +37,7 @@ const Deposite = () => {
       </View>
 
       {/* Content */}
-      <View style={[styles.content, { marginBottom: keyboardHeight }]}>
+      <View style={styles.content}>
         {/* Min Max Info */}
         <Text style={styles.minMaxText}>Min 0.0001 ETH - Max 10,000 ETH</Text>
 

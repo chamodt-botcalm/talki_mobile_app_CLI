@@ -18,7 +18,7 @@ type CombinedNavigationProp = CompositeNavigationProp<
 >;
 
 
-const Audio_Call_Ringing = () => {
+const AudioCallAnswer = () => {
   const navigation = useNavigation<CombinedNavigationProp>();
   useEffect(() => {
       const backAction = () => {
@@ -43,7 +43,7 @@ const Audio_Call_Ringing = () => {
           <Image source={images.julietr} style={styles.profileImage} />
         </View>
         <Text style={styles.callerName}>Juliet Smith</Text>
-        <Text style={styles.callerStatus}>Requesting...</Text>
+        <Text style={styles.callerStatus}>1:20</Text>
       </View>
       <View style={styles.controllerContainer}>
         <AudioCallController />
@@ -129,4 +129,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Audio_Call_Ringing
+export default AudioCallAnswer
