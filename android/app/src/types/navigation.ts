@@ -19,6 +19,7 @@ export type RootStackParamList = {
   IncomingVideoCall: undefined;
   IncomingAudiooCall: undefined;
   AudioCallAnswer:undefined;
+  VideoCallAnswer:undefined;
 };
 
 export type TabParamList = {

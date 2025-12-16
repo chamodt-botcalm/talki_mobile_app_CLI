@@ -20,6 +20,7 @@ import Audio_Call_Ringing from '../screens/Audio-Call-Ringing';
 import IncomingVideoCall from '../screens/Incoming-Video-Call';
 import IncomingAudioCalling from '../screens/Incoming-Audio-Calling';
 import AudioCallAnswer from '../screens/Audio-Call-Answer';
+import VideoCallAnswer from '../screens/Video-Call-Answer';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -48,6 +49,7 @@ export default function AppNavigator() {
         <Stack.Screen name="IncomingVideoCall" component={IncomingVideoCall} />
         <Stack.Screen name="IncomingAudiooCall" component={IncomingAudioCalling} />
         <Stack.Screen name="AudioCallAnswer" component={AudioCallAnswer} />
+        <Stack.Screen name="VideoCallAnswer" component={VideoCallAnswer} />
       </Stack.Navigator>
     </NavigationContainer>
   );

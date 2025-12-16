@@ -85,5 +85,6 @@ export const images = {
   volume:require('../../../../assets/images/volume.png'),
   blur:require('../../../../assets/images/blur.png'),
   julietr:require('../../../../assets/images/julietr.jpg'),
-  remind:require('../../../../assets/images/remind.png')
+  remind:require('../../../../assets/images/remind.png'),
+  GirlRectangle:require('../../../../assets/images/GirlRectangle.png'),
 };

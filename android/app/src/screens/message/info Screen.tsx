@@ -572,7 +572,7 @@ const InfoScreen = () => {
               <Text style={styles.modalTitle}>Incoming Video Call </Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>navigation.navigate('IncomingAudiooCall')}>
               <Text style={styles.modalTitle}>Incoming Audio Calling</Text></TouchableOpacity>
-            <TouchableOpacity>
+           <TouchableOpacity onPress={()=>navigation.navigate('VideoCallAnswer')}>
               <Text style={styles.modalTitle}>Video Call Answer</Text></TouchableOpacity>
             <TouchableOpacity onPress={()=>navigation.navigate('AudioCallAnswer')}>
               <Text style={styles.modalTitle}>Audio Call Answer</Text></TouchableOpacity>
