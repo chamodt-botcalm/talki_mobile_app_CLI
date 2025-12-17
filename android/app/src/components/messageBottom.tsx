@@ -1,97 +1,224 @@
-import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, TextInput, View } from 'react-native';
-import { images } from '../constants/images';
+import React, { useMemo, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Pressable,
+  Modal,
+  Animated,
+  FlatList,
+  StyleSheet,
+  Keyboard,
+  Dimensions,
+} from "react-native";
+import Icon from "react-native-vector-icons/Feather";
+import { images } from "../constants/images";
+import { scaleHeight, scaleWidth } from "../constants/size";
+import Transfer from "./attachment/transfer";
 
+const { height: SCREEN_H } = Dimensions.get("window");
+const SHEET_HEIGHT = scaleHeight(338);
+const INPUT_HEIGHT = scaleHeight(90);
 
+export default function MessageBottom() {
+  const [open, setOpen] = useState(false);
+  const [showTransfer, setShowTransfer] = useState(false);
 
-const MessageBottom = () => {
+  // Sheet:  SHEET_HEIGHT -> 0
+  const sheetY = useRef(new Animated.Value(SHEET_HEIGHT)).current;
 
-  const [dimensions, setDimensions] = useState({
-      width: Dimensions.get('window').width,
-      height: Dimensions.get('window').height,
-    });
+  // Input inside modal: 0 -> -SHEET_HEIGHT
+  const inputY = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
-      setDimensions({
-        width: window.width,
-        height: window.height,
-      });
-    });
-
-    return () => subscription?.remove();
-  }, []);
-
-// Base dimensions (mobile: w-430 h-932, tablet: w-834 h-1194)
-  const BASE_WIDTH = 430;
-  const BASE_HEIGHT = 932;
-  const TABLET_WIDTH = 834;
-  const TABLET_HEIGHT = 1194;
-
-  // Detect device type
-  const isTablet = dimensions.width >= 600 || dimensions.height >= 1000;
-
-  // Use tablet base if detected
-  const currentBaseWidth = isTablet ? TABLET_WIDTH : BASE_WIDTH;
-  const currentBaseHeight = isTablet ? TABLET_HEIGHT : BASE_HEIGHT;
-
-  // Detect orientation
-  const isLandscape = dimensions.width > dimensions.height;
-
-  // Scale functions
-  const scaleWidth = (size: number) => (dimensions.width / currentBaseWidth) * size;
-  const scaleHeight = (size: number) => (dimensions.height / currentBaseHeight) * size;
-
-  // Responsive scale factor (use the smaller scale to prevent overflow)
-  const scale = Math.min(
-    dimensions.width / currentBaseWidth,
-    dimensions.height / currentBaseHeight
+  const items = useMemo(
+    () => [
+      { id: "gallery", label: "Gallery", icon: images.gallery },
+      { id: "document", label: "Document", icon: images.document },
+      { id: "audio", label: "Audio", icon: images.audio },
+      { id: "location", label: "Location", icon: images.location },
+      { id: "contact", label: "Contact", icon: images.contact },
+      { id: "poll", label: "Poll", icon: images.poll },
+      { id: "transfer", label: "Transfer", icon: images.transfer },
+    ],
+    []
   );
 
+  const showSheet = () => {
+    Keyboard.dismiss();
+    setOpen(true);
 
+    sheetY.setValue(SHEET_HEIGHT);
+    inputY.setValue(0);
+
+    Animated.parallel([
+      Animated.timing(sheetY, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+      Animated.timing(inputY, {
+        toValue: -SHEET_HEIGHT,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const hideSheet = () => {
+    Animated.parallel([
+      Animated.timing(sheetY, {
+        toValue: SHEET_HEIGHT,
+        duration: 180,
+        useNativeDriver: true,
+      }),
+      Animated.timing(inputY, {
+        toValue: 0,
+        duration: 180,
+        useNativeDriver: true,
+      }),
+    ]).start(() => setOpen(false));
+  };
+
+  const renderItem = ({ item }: any) => (
+    <TouchableOpacity style={styles.tile} onPress={() => {
+      if (item.id === "transfer") {
+        hideSheet();
+        setShowTransfer(true);
+      }
+    }}>
+      <View style={styles.iconCircle}>
+       <Image source={item.icon} style={{ width: 30, height: 30, resizeMode: "contain" }} />
+      </View>
+      <Text style={styles.tileText}>{item.label}</Text>
+    </TouchableOpacity>
+  );
+
+  const InputBar = ({ onAttachPress }: { onAttachPress: () => void }) => (
+    <View style={styles.inputContainer}>
+      <TouchableOpacity onPress={onAttachPress}>
+        <Image source={images.attach} style={styles.icon} />
+      </TouchableOpacity>
+
+      <TextInput
+        placeholder="Message"
+        placeholderTextColor="#999"
+        style={styles.input}
+      />
+
+      <Image source={images.microphone} style={styles.icon} />
+    </View>
+  );
 
   return (
-    <View style={{
-      position:'absolute',
-      bottom:0, 
-      height:scaleHeight(90),
-      width:'100%',
-      backgroundColor:'#F6F5FA',
-      borderTopColor:'#7A7A7A',
-      borderTopWidth:1,
-     
-      }}>
-      <View style={{
-        flexDirection:'row',
-        paddingHorizontal: scaleWidth(15),
-        alignItems: 'center',
-        gap:scaleWidth(10),
-        paddingVertical:scaleHeight(17)
-      }}>
-          <Image source={images.attach}
-                          style={{
-                            width: scaleWidth(30),
-                            height: scaleHeight(30),
-                            tintColor: '#858E99'
-                          }} />
-          <TextInput placeholder='Message' style={{
-            flex: 1,
-            paddingVertical:scaleHeight(6),
-            borderColor:'#D1D1D6',
-            borderWidth:1,
-            borderRadius:20,
-            paddingHorizontal: scaleWidth(10),
-            paddingLeft: scaleWidth(15)
-          }}/>
-          <Image source={images.microphone}
-                          style={{
-                            width: scaleWidth(30),
-                            height: scaleHeight(30),
-                            tintColor: '#858E99'
-                          }} />
-      </View>
-    </View>
-  )
+    <>
+      <Transfer visible={showTransfer} onClose={() => setShowTransfer(false)} />
+      
+      {/* ✅ Normal input (only when modal closed) */}
+      {!open && <InputBar onAttachPress={showSheet} />}
+
+      {/* ✅ Modal contains backdrop + input + sheet */}
+      <Modal visible={open} transparent animationType="none" onRequestClose={hideSheet}>
+        {/* Backdrop */}
+        <Pressable style={styles.backdrop} onPress={hideSheet} />
+
+        {/* ✅ Input INSIDE modal, moving up with sheet */}
+        <Animated.View
+          style={[
+            styles.modalInputWrapper,
+            { transform: [{ translateY: inputY }] },
+          ]}
+        >
+          <InputBar onAttachPress={() => {}} />
+        </Animated.View>
+
+        {/* Sheet */}
+        <Animated.View
+          style={[
+            styles.sheet,
+            { height: SHEET_HEIGHT, transform: [{ translateY: sheetY }] },
+          ]}
+        >
+          <View style={{alignItems: "center" }}>
+          <FlatList
+            data={items}
+            keyExtractor={(i) => i.id}
+            renderItem={renderItem}
+            numColumns={3}
+            columnWrapperStyle={{ justifyContent: 'flex-start', gap:scaleWidth(47) }}
+          /></View>
+        </Animated.View>
+      </Modal>
+    </>
+  );
 }
 
-export default MessageBottom
+const styles = StyleSheet.create({
+  inputContainer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: INPUT_HEIGHT,
+    backgroundColor: "#F6F5FA",
+    borderTopWidth: 1,
+    borderTopColor: "#7A7A7A",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    gap: 10,
+  },
+  modalInputWrapper: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    // IMPORTANT: keep it above the sheet when moved up
+    zIndex: 10,
+    elevation: 10,
+  },
+  icon: {
+    width: 28,
+    height: 28,
+    tintColor: "#858E99",
+    resizeMode: "contain",
+  },
+  input: {
+    flex: 1,
+    height: scaleHeight(42),
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#D1D1D6",
+    paddingHorizontal: 14,
+    backgroundColor: "#fff",
+  },
+
+  backdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.25)",
+  },
+
+  sheet: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#F6F5FA",
+    padding: 16,
+   
+  },
+  tile: {
+    alignItems: "center",
+    marginBottom: 18,
+  },
+  iconCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 999,
+    backgroundColor: "#232323",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8,
+  },
+  tileText: { fontSize: 12, color: "#222" },
+});

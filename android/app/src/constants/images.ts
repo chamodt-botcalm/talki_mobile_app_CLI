@@ -87,4 +87,11 @@ export const images = {
   julietr:require('../../../../assets/images/julietr.jpg'),
   remind:require('../../../../assets/images/remind.png'),
   GirlRectangle:require('../../../../assets/images/GirlRectangle.png'),
+  audio:require('../../../../assets/images/audio.png'),
+  contact:require('../../../../assets/images/contact.png'),
+  document:require('../../../../assets/images/document.png'),
+  gallery:require('../../../../assets/images/gallery.png'),
+  location:require('../../../../assets/images/location.png'),
+  poll:require('../../../../assets/images/poll.png'),
+  transfer:require('../../../../assets/images/transfer.png'),
 };
