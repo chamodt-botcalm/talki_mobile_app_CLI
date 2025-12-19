@@ -119,7 +119,9 @@ export default function MessageBottom() {
       {!open && <InputBar onAttachPress={showSheet} />}
 
       {/* ✅ Modal contains backdrop + input + sheet */}
-      <Modal visible={open} transparent animationType="none" onRequestClose={hideSheet}>
+      <Modal visible={open}
+        animationType="slide"
+        transparent={true} onRequestClose={hideSheet}>
         {/* Backdrop */}
         <Pressable style={styles.backdrop} onPress={hideSheet} />
 
@@ -137,7 +139,7 @@ export default function MessageBottom() {
         <Animated.View
           style={[
             styles.sheet,
-            { height: SHEET_HEIGHT, transform: [{ translateY: sheetY }] },
+            { transform: [{ translateY: sheetY }] },
           ]}
         >
           <View style={{alignItems: "center" }}>
@@ -196,16 +198,16 @@ const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.25)",
+    justifyContent: 'flex-end',
   },
 
   sheet: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
+    height: SHEET_HEIGHT, 
     backgroundColor: "#F6F5FA",
     padding: 16,
-   
+    width: "100%",
+    position: "absolute",
+    bottom: 0,
   },
   tile: {
     alignItems: "center",
