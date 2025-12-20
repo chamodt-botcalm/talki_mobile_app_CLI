@@ -94,4 +94,5 @@ export const images = {
   location:require('../../../../assets/images/location.png'),
   poll:require('../../../../assets/images/poll.png'),
   transfer:require('../../../../assets/images/transfer.png'),
+  loader_circle:require('../../../../assets/images/loader-circle.png'),
 };
