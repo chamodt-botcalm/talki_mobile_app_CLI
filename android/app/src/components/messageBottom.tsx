@@ -15,10 +15,10 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import { images } from "../constants/images";
-import { scaleHeight, scaleWidth } from "../constants/size";
+import { isTablet, scaleHeight, scaleWidth } from "../constants/size";
 import Transfer from "./attachment/transfer";
 
-const { height: SCREEN_H } = Dimensions.get("window");
+
 const SHEET_HEIGHT = scaleHeight(338);
 const INPUT_HEIGHT = scaleHeight(90);
 
@@ -96,6 +96,7 @@ export default function MessageBottom() {
   );
 
   const InputBar = ({ onAttachPress }: { onAttachPress: () => void }) => (
+     
     <View style={styles.inputContainer}>
       <TouchableOpacity onPress={onAttachPress}>
         <Image source={images.attach} style={styles.icon} />
@@ -109,14 +110,16 @@ export default function MessageBottom() {
 
       <Image source={images.microphone} style={styles.icon} />
     </View>
+     
   );
 
   return (
     <>
+   
       <Transfer visible={showTransfer} onClose={() => setShowTransfer(false)} />
       
       {/* ✅ Normal input (only when modal closed) */}
-      {!open && <InputBar onAttachPress={showSheet} />}
+      {!open &&!isTablet && <InputBar onAttachPress={showSheet} />}
 
       {/* ✅ Modal contains backdrop + input + sheet */}
       <Modal visible={open}
@@ -153,8 +156,10 @@ export default function MessageBottom() {
         </Animated.View>
       </Modal>
     </>
+        
   );
 }
+
 
 const styles = StyleSheet.create({
   inputContainer: {

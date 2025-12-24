@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 import { Dimensions, BackHandler } from 'react-native';
+import DeviceInfo from "react-native-device-info";
+
 
 // Base dimensions (mobile: w-430 h-932, tablet: w-834 h-1194)
 const BASE_WIDTH = 430;
 const BASE_HEIGHT = 932;
 const TABLET_WIDTH = 834;
 const TABLET_HEIGHT = 1194;
+
+export const isTablet = DeviceInfo.isTablet();
 
 // Get current dimensions
 function getCurrentDimensions() {
