@@ -13,6 +13,7 @@ import BlackBackground from '../../components/main/black';
 import WhiteBackground from '../../components/main/white';
 import { images } from '../../constants/images';
 import PullBar from '../../components/pullbar';
+import { isTablet } from '../../constants/size';
 
 const ContactScreen = () => {
     const contacts = [
@@ -72,7 +73,7 @@ const ContactScreen = () => {
 
     return (
         <BlackBackground>
-            <View style={[styles.row2, { justifyContent: 'space-between', marginTop: scaleHeight(73), marginHorizontal: 14 }]}>
+            <View style={[styles.row2, { justifyContent: 'space-between', marginTop: isTablet?scaleHeight(110):scaleHeight(73), marginHorizontal: 14 }]}>
                 <Text style={styles.text}>Contacts</Text>
                 <View style={[styles.row2, { gap: 10 }]}>
                     <Image source={images.telephone}
@@ -82,7 +83,7 @@ const ContactScreen = () => {
                 </View>
             </View>
 
-            <WhiteBackground height={scaleHeight(811)}>
+            <WhiteBackground height={isTablet?scaleHeight(1033):scaleHeight(811)}>
                 <View style={{ height: scaleHeight(11) }} />
                 <PullBar width={scaleWidth(62.5)} height={scaleHeight(6)} />
 

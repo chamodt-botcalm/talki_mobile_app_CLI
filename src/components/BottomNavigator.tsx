@@ -2,7 +2,7 @@ import React from 'react'
 import { Image, TouchableOpacity, View, Text} from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import MessageCountBadge from './messagecountbadge'
-import {images} from '../../src/constants/images';
+import {images} from '../constants/images';
 import { useMessageStore } from './MessageList';
 export default function BottomNavigator({ state, descriptors, navigation }: BottomTabBarProps) {
   const total = useMessageStore((state: any) => state.totalMessages);

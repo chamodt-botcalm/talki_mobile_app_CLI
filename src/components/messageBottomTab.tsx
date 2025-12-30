@@ -46,17 +46,15 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
   // ---------------------------
   const sheetProgress = useRef(new Animated.Value(0)).current;
 
-  const TAB_BAR_HEIGHT = scaleHeight(90);
-  const PANEL_BOTTOM_OFFSET = TAB_BAR_HEIGHT + scaleHeight(10); // tab bar එකට උඩින්
+  // ✅ Your actual bottom nav height (same as the container height below)
+  const NAV_HEIGHT = scaleHeight(90);
 
   const PANEL_WIDTH = useMemo(() => {
-    // photo එක වගේ center panel width
     const w = isTablet ? Math.min(scaleWidth(420), dimensions.width * 0.75) : dimensions.width - scaleWidth(24);
     return Math.max(scaleWidth(320), w);
   }, [dimensions.width, isTablet]);
 
   const PANEL_HEIGHT = useMemo(() => {
-    // photo එක වගේ compact
     return isTablet ? scaleHeight(520) : scaleHeight(470);
   }, [isTablet, dimensions.height]);
 
@@ -99,7 +97,6 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
 
   // ---------------------------
   // Mock “Recent Photos”
-  // (ඇත්ත gallery images later replace කරන්න)
   // ---------------------------
   const mockPhotos = useMemo(
     () => Array.from({ length: 8 }).map((_, i) => ({ id: `p-${i}` })),
@@ -132,7 +129,7 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
     overflow: 'hidden' as const,
   };
 
-  const ActionBtn = ({ label, emoji }: { label: string; emoji: string }) => (
+  const ActionBtn = ({ label, imagee }: { label: string; imagee: any }) => (
     <TouchableOpacity style={{ alignItems: 'center', width: scaleWidth(54) }}>
       <View
         style={{
@@ -144,7 +141,7 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
           justifyContent: 'center',
         }}
       >
-        <Text style={{ fontSize: scaleWidth(18), color: '#fff' }}>{emoji}</Text>
+       <Image source={imagee} style={{ resizeMode: 'contain',width:scaleWidth(20),height:scaleHeight(20) }} />
       </View>
       <Text style={{ marginTop: scaleHeight(6), fontSize: scaleWidth(11), color: '#8E8E93' }}>
         {label}
@@ -152,7 +149,7 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
     </TouchableOpacity>
   );
 
-  const totalMessages = 0;
+  const totalMessages = 1;
 
   return (
     <View
@@ -167,7 +164,8 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: scaleWidth(12),
-        height: scaleHeight(90),
+        height: NAV_HEIGHT, // ✅ same height used above
+        zIndex: 10,
       }}
     >
       {/* First Column — Navigation Icons */}
@@ -278,131 +276,144 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
         onRequestClose={closeSheet}
         presentationStyle="overFullScreen"
       >
-        {/* Overlay */}
-        <Pressable style={{ flex: 1 }} onPress={closeSheet}>
-          <Animated.View style={{ flex: 1, backgroundColor: '#000', opacity: overlayOpacity }} />
-        </Pressable>
-
-        {/* Floating Panel */}
-        <View
-          pointerEvents="box-none"
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: PANEL_BOTTOM_OFFSET,
-            alignItems: 'center',
-          }}
-        >
-          <Animated.View
+        {/* ✅ Root must allow touches to pass where we don't cover (nav area) */}
+        <View style={{ flex: 1 }} pointerEvents="box-none">
+          {/* ✅ Overlay (STOP above the bottom nav) */}
+          <Pressable
+            onPress={closeSheet}
             style={{
-              width: PANEL_WIDTH,
-              height: PANEL_HEIGHT,
-              transform: [{ translateY }],
-              backgroundColor: '#EDEDED',
-              borderRadius: scaleWidth(16),
-              overflow: 'hidden',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: scaleHeight(60), // ✅ key: nav area is not dark
+              zIndex: 0,
             }}
           >
-            {/* Header */}
-            <View
+            <Animated.View style={{ flex: 1, backgroundColor: '#000', opacity: overlayOpacity }} />
+          </Pressable>
+
+          {/* Floating Panel */}
+          <View
+            pointerEvents="box-none"
+            style={{
+              position: 'absolute',
+              left: scaleWidth(60),
+              right: scaleWidth(0),
+              bottom: scaleHeight(50),
+              alignItems: 'center',
+
+            }}
+          >
+            <Animated.View
               style={{
-                height: scaleHeight(44),
-                backgroundColor: '#DCDCDC',
-                paddingHorizontal: scaleWidth(14),
-                flexDirection: 'row',
-                alignItems: 'center',
+                width: PANEL_WIDTH,
+                height: PANEL_HEIGHT,
+                transform: [{ translateY }],
+                backgroundColor: '#EDEDED',
+                borderRadius: scaleWidth(16),
+                overflow: 'hidden',
               }}
             >
-              <TouchableOpacity onPress={closeSheet}>
-                <Text style={{ fontSize: scaleWidth(14), color: '#111' }}>Cancel</Text>
-              </TouchableOpacity>
-
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={{ fontSize: scaleWidth(14), color: '#111' }}>Recents ⌄</Text>
-              </View>
-
-              {/* right spacer to keep center title truly centered */}
-              <View style={{ width: scaleWidth(60) }} />
-            </View>
-
-            {/* Grid */}
-            <View style={{ flex: 1, padding: GRID_PADDING }}>
-              <View style={{ flexDirection: 'row', gap: GRID_GAP }}>
-                {/* Camera tile (1x2) */}
-                <TouchableOpacity
-                  activeOpacity={0.85}
-                  style={cameraTileStyle}
-                  onPress={() => {
-                    // TODO: open camera
-                  }}
-                >
-                  <Text style={{ fontSize: scaleWidth(34) }}>📷</Text>
+              {/* Header */}
+              <View
+                style={{
+                  height: scaleHeight(44),
+                  backgroundColor: '#DCDCDC',
+                  paddingHorizontal: scaleWidth(14),
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <TouchableOpacity onPress={closeSheet}>
+                  <Text style={{ fontSize: scaleWidth(14), color: '#111' }}>Cancel</Text>
                 </TouchableOpacity>
 
-                {/* Right side photos (2 columns x 3 rows visually) */}
-                <View style={{ flex: 1 }}>
-                  {/* We’ll layout remaining tiles in 2 columns inside right area */}
-                  <View style={{ flexDirection: 'row', gap: GRID_GAP }}>
-                    <View style={{ gap: GRID_GAP }}>
-                      {mockPhotos.slice(0, 3).map((p) => (
-                        <TouchableOpacity key={p.id} style={photoTileStyle} />
-                      ))}
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  <Text style={{ fontSize: scaleWidth(14), color: '#111' }}>Recents ⌄</Text>
+                </View>
+
+                {/* right spacer to keep center title truly centered */}
+                <View style={{ width: scaleWidth(60) }} />
+              </View>
+
+              {/* Grid */}
+              <View style={{ flex: 1, padding: GRID_PADDING }}>
+                <View style={{ flexDirection: 'row', gap: GRID_GAP }}>
+                  {/* Camera tile (1x2) */}
+                  <TouchableOpacity
+                    activeOpacity={0.85}
+                    style={cameraTileStyle}
+                    onPress={() => {
+                      // TODO: open camera
+                    }}
+                  >
+                    <Text style={{ fontSize: scaleWidth(34) }}>📷</Text>
+                  </TouchableOpacity>
+
+                  {/* Right side photos */}
+                  <View style={{ flex: 1 }}>
+                    <View style={{ flexDirection: 'row', gap: GRID_GAP }}>
+                      <View style={{ gap: GRID_GAP }}>
+                        {mockPhotos.slice(0, 3).map((p) => (
+                          <TouchableOpacity key={p.id} style={photoTileStyle} />
+                        ))}
+                      </View>
+
+                      <View style={{ gap: GRID_GAP }}>
+                        {mockPhotos.slice(3, 6).map((p) => (
+                          <TouchableOpacity key={p.id} style={photoTileStyle} />
+                        ))}
+                      </View>
                     </View>
 
-                    <View style={{ gap: GRID_GAP }}>
-                      {mockPhotos.slice(3, 6).map((p) => (
+                    {/* Bottom row */}
+                    <View style={{ flexDirection: 'row', gap: GRID_GAP, marginTop: GRID_GAP }}>
+                      {mockPhotos.slice(6, 8).map((p) => (
                         <TouchableOpacity key={p.id} style={photoTileStyle} />
                       ))}
+                      <TouchableOpacity style={photoTileStyle} />
                     </View>
-                  </View>
-
-                  {/* Bottom row (3 tiles like screenshot) */}
-                  <View style={{ flexDirection: 'row', gap: GRID_GAP, marginTop: GRID_GAP }}>
-                    {mockPhotos.slice(6, 8).map((p) => (
-                      <TouchableOpacity key={p.id} style={photoTileStyle} />
-                    ))}
-                    <TouchableOpacity style={photoTileStyle} />
                   </View>
                 </View>
               </View>
-            </View>
 
-            {/* Bottom Actions */}
+              {/* Bottom Actions */}
+              <View
+                style={{
+                  paddingTop: scaleHeight(10),
+                  paddingBottom: scaleHeight(12),
+                  paddingHorizontal: scaleWidth(10),
+                  backgroundColor: '#D9D9D9',
+                }}
+              >
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <ActionBtn label="Gallery" imagee={images.gallery} />
+                  <ActionBtn label="Document" imagee={images.gallery} />
+                  <ActionBtn label="Audio" imagee={images.gallery} />
+                  <ActionBtn label="Location" imagee={images.gallery} />
+                  <ActionBtn label="Contact" imagee={images.gallery}/>
+                  <ActionBtn label="Poll" imagee={images.gallery} />
+                  <ActionBtn label="Transfer" imagee={images.gallery} />
+                </View>
+              </View>
+            </Animated.View>
+
+            {/* Small bottom pointer */}
             <View
               style={{
-                paddingTop: scaleHeight(10),
-                paddingBottom: scaleHeight(12),
-                paddingHorizontal: scaleWidth(10),
-                backgroundColor: '#2C2C2E',
+                width: 0,
+                height: 0,
+                borderLeftWidth: scaleWidth(12),
+                borderRightWidth: scaleWidth(12),
+                borderTopWidth: scaleWidth(20),
+                borderLeftColor: 'transparent',
+                borderRightColor: 'transparent',
+                borderTopColor: '#D9D9D9',
+                marginTop: 0,
               }}
-            >
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <ActionBtn label="Gallery" emoji="🖼️" />
-                <ActionBtn label="Document" emoji="📄" />
-                <ActionBtn label="Audio" emoji="🎧" />
-                <ActionBtn label="Location" emoji="📍" />
-                <ActionBtn label="Contact" emoji="👤" />
-                <ActionBtn label="Poll" emoji="📊" />
-                <ActionBtn label="Transfer" emoji="💸" />
-              </View>
-            </View>
-          </Animated.View>
-
-          {/* Small bottom pointer (optional) */}
-          <View
-            style={{
-              width: 0,
-              height: 0,
-              borderLeftWidth: scaleWidth(10),
-              borderRightWidth: scaleWidth(10),
-              borderTopWidth: scaleWidth(12),
-              borderLeftColor: 'transparent',
-              borderRightColor: 'transparent',
-              borderTopColor: '#EDEDED',
-              marginTop: -1,
-            }}
-          />
+            />
+          </View>
         </View>
       </Modal>
     </View>

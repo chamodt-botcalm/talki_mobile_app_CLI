@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Pressable, Image, TouchableOpacity, ScrollView,
 import React, { useState } from 'react'
 import BlackBackground from '../../components/main/black'
 import WhiteBackground from '../../components/main/white'
-import { useBack, scaleHeight, scaleWidth } from '../../constants/size'
+import { useBack, scaleHeight, scaleWidth, isTablet } from '../../constants/size'
 import { RootStackParamList } from '../../types/navigation'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import { images } from '../../constants/images'
@@ -102,7 +102,7 @@ const Storage = () => {
         <Text style={[styles.headerText, { position: 'absolute', left: 0, right: 0, textAlign: 'center', zIndex: 0 }]}>Data and Storage</Text>
       </View>
 
-      <WhiteBackground height={scaleHeight(811)}>
+      <WhiteBackground height={isTablet?scaleHeight(1033):scaleHeight(811)}>
         <View style={{ height: scaleHeight(11) }} />
         <PullBar width={scaleWidth(62.5)} height={scaleHeight(6)} />
         <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: scaleWidth(14),
-    marginTop: scaleHeight(73),
+    marginTop:isTablet?scaleHeight(113): scaleHeight(73),
   },
   headerText: {
     color: '#D9FD00',

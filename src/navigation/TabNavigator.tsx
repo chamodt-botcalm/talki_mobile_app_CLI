@@ -7,8 +7,8 @@ import ChatScreen from '../screens/tabs/ChatScreen';
 import ContactScreen from '../screens/tabs/ContactScreen';
 import SettingsScreen from '../screens/tabs/SettingsScreen';
 import CallScreen from '../screens/call/CallScreen';
-import BottomNavigator from '../components/BottomNavigator';
-import MessageBottomTab from '../components/messageBottomTab';
+import BottomNavigator from '../../src/components/BottomNavigator';
+import MessageBottomTab from '../../src/components/messageBottomTab';
 
 const Tab = createBottomTabNavigator();
 

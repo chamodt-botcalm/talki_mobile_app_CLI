@@ -99,7 +99,7 @@ const SettingsScreen = () => {
       position: 'absolute',
       bottom: 0,
       backgroundColor: '#FFFFFF',
-      height: scaleHeight(811),
+      height: isTablet?scaleHeight(1033):scaleHeight(811),
       width: '100%',
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,
@@ -188,7 +188,7 @@ const SettingsScreen = () => {
   return (
     <View style={styles.back1}>
 
-      <View style={[styles.row2, { justifyContent: 'space-between', marginTop: scaleHeight(73), marginHorizontal: 14 }]}>
+      <View style={[styles.row2, { justifyContent: 'space-between', marginTop: isTablet?scaleHeight(113):scaleHeight(73), marginHorizontal: 14 }]}>
         <Text style={styles.text}>Settings</Text>
         <View style={[styles.row2, { gap: 10 }]}>
           <Image source={images.telephone}
