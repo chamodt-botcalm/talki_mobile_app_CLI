@@ -5,16 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import MessageBottom from '../../components/messageBottom';
 import MessageBottomTab from '../../components/messageBottomTab';
 import Messages from '../../components/messages';
-import { MessageStackParamList } from '../../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../../constants/images';
-
-type TabNavProp = NativeStackNavigationProp<MessageStackParamList>;
-
-
+import { screenMap } from '../../constants/screenMap';
 
 export default function Message_Screen() {
-  const navigation = useNavigation<TabNavProp>();
+  const navigation = useNavigation();
 
   const [dimensions, setDimensions] = useState({
     width: Dimensions.get('window').width,
@@ -127,7 +123,7 @@ export default function Message_Screen() {
                 flexDirection: 'column',
                 alignItems: 'center'
               }}>
-                 <Pressable onPress={()=> navigation.navigate('InfoScreen')}>
+                 <Pressable onPress={()=> navigation.navigate(screenMap.infoScreen)}>
                 <Text style={{
                   color: '#FFFFFF',
                   fontSize: 16
@@ -153,7 +149,7 @@ export default function Message_Screen() {
                 flexDirection: 'row',
                 alignItems: "center",
                 gap: 16
-              }}><Pressable onPress={()=> navigation.navigate('InfoScreen')}>
+              }}><Pressable onPress={()=> navigation.navigate(screenMap.infoScreen)}>
                 <Image source={images.martha}
                   style={{
                     width: 52,
@@ -164,7 +160,7 @@ export default function Message_Screen() {
                   flexDirection: 'column',
                   alignItems: 'flex-start'
                 }}>
-                   <Pressable onPress={()=> navigation.navigate('InfoScreen')}>
+                   <Pressable onPress={()=> navigation.navigate(screenMap.infoScreen)}>
                   <Text style={{
                     color: '#000000',
                     fontSize: 16

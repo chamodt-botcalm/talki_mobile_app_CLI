@@ -1,23 +1,15 @@
 import { View, Modal, Text, Dimensions, StyleSheet, Animated, BackHandler, Image, Pressable, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { TabParamList,RootStackParamList } from '../../types/navigation';
-import { MessageStackParamList } from '../../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { images } from '../../constants/images';
+import { screenMap } from '../../constants/screenMap';
 
-type CombinedNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<RootStackParamList>,
-  CompositeNavigationProp<
-    NativeStackNavigationProp<TabParamList>,
-    NativeStackNavigationProp<MessageStackParamList>
-  >
->;
 
 const InfoScreen = () => {
   const [visible, setVisible] = useState(false);
-  const navigation = useNavigation<CombinedNavigationProp>();
+  const navigation = useNavigation();
 
   const [dimensions, setDimensions] = useState({
     width: Dimensions.get('window').width,
@@ -142,7 +134,7 @@ const InfoScreen = () => {
         paddingHorizontal: scaleWidth(14),
         marginTop: scaleHeight(73)
       }}>
-        <Pressable onPress={() => isTablet ? navigation.navigate('ChatScreen') : navigation.goBack()}>
+        <Pressable onPress={() => isTablet ? navigation.navigate(screenMap.chatScreen) : navigation.goBack()}>
           <View style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -168,7 +160,7 @@ const InfoScreen = () => {
           color: '#D9FD00',
           fontSize: 18
         }}>Info</Text>
-        <Pressable onPress={() => navigation.navigate('InfoEdit')}>
+        <Pressable onPress={() => navigation.navigate(screenMap.infoEdit)}>
           <Text style={{
             color: '#D9FD00',
             fontSize: 18
@@ -564,17 +556,17 @@ const InfoScreen = () => {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalBox}>
-            <TouchableOpacity onPress={()=>navigation.navigate('VideoRinging')}>
+            <TouchableOpacity onPress={()=>navigation.navigate(screenMap.videoRinging)}>
               <Text style={styles.modalTitle}>Video Call Ringing</Text></TouchableOpacity>
-            <TouchableOpacity onPress={()=>navigation.navigate('AudioRinging')}>
+            <TouchableOpacity onPress={()=>navigation.navigate(screenMap.audioRinging)}>
               <Text style={styles.modalTitle}>Audio Call Ringing</Text></TouchableOpacity>
-            <TouchableOpacity onPress={()=>navigation.navigate('IncomingVideoCall')}>
+            <TouchableOpacity onPress={()=>navigation.navigate(screenMap.incomingVideoCall)}>
               <Text style={styles.modalTitle}>Incoming Video Call </Text></TouchableOpacity>
-            <TouchableOpacity onPress={()=>navigation.navigate('IncomingAudiooCall')}>
+            <TouchableOpacity onPress={()=>navigation.navigate(screenMap.incomingAudioCall)}>
               <Text style={styles.modalTitle}>Incoming Audio Calling</Text></TouchableOpacity>
-           <TouchableOpacity onPress={()=>navigation.navigate('VideoCallAnswer')}>
+           <TouchableOpacity onPress={()=>navigation.navigate(screenMap.videoCallAnswer)}>
               <Text style={styles.modalTitle}>Video Call Answer</Text></TouchableOpacity>
-            <TouchableOpacity onPress={()=>navigation.navigate('AudioCallAnswer')}>
+            <TouchableOpacity onPress={()=>navigation.navigate(screenMap.audioCallAnswer)}>
               <Text style={styles.modalTitle}>Audio Call Answer</Text></TouchableOpacity>
           </View>
         </View>

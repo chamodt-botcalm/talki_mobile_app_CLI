@@ -1,15 +1,12 @@
 import { View, Text, ScrollView, Image, Pressable, Animated, Dimensions, BackHandler } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { TabParamList } from '../../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../../constants/images';
-
-type NavigationProp = NativeStackNavigationProp<TabParamList>;
-
+import { screenMap } from '../../constants/screenMap';
 
 const InfoEdit = () => {
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation();
     
 
     const [dimensions, setDimensions] = useState({
@@ -115,7 +112,7 @@ const InfoEdit = () => {
                     color: '#D9FD00',
                     fontSize: 18
                 }}>Info</Text>
-                <Pressable onPress={() => isTablet ? navigation.navigate('ChatScreen') : navigation.goBack()}>
+                <Pressable onPress={() => isTablet ? navigation.navigate(screenMap.chatScreen) : navigation.goBack()}>
                     <Text style={{
                         color: '#D9FD00',
                         fontSize: 18

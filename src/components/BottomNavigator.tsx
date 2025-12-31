@@ -12,7 +12,7 @@ export default function BottomNavigator({ state, descriptors, navigation }: Bott
   const tabItems = [
     { route: 'Wallet', icon: images.wallet, name: 'Wallet'},
     { route: 'ChatScreen', icon: images.communications, iconn: images.num17, name: 'Chats'},
-    { route: 'Contact', icon: images.user ,name: 'Contacts'},
+    { route: 'Contacts', icon: images.user ,name: 'Contacts'},
     { route: 'Settings', icon: images.setting ,name: 'Settings'},
   ]
 

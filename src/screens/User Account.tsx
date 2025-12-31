@@ -3,15 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { Animated, BackHandler, Dimensions, Image, Pressable, Text, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import BottomNavigator from '../components/BottomNavigator';
-import { RootStackParamList } from '../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../constants/images';
+import { screenMap } from '../constants/screenMap';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
+type RootStackParamList = {
+  [key: string]: undefined;
+};
 
 export default function UserAccount() {
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
     const [dimensions, setDimensions] = useState({
         width: Dimensions.get('window').width,
@@ -225,7 +226,7 @@ export default function UserAccount() {
                                 height: isTablet ? scaleHeight(60) : scaleHeight(50),
                                 borderRadius: scale * 5,
                                 justifyContent: 'center'
-                            }} onPress={() => navigation.navigate('MainTabs')}
+                            }} onPress={() => navigation.navigate(screenMap.mainTabs)}
                         >
                             <Text style={{ color: 'black', fontSize: scale * 20, textAlign: 'center', fontFamily: 'Inter', }}>
                                 Done

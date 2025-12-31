@@ -3,7 +3,6 @@ import React from 'react'
 import BlackBackground from '../../components/main/black'
 import WhiteBackground from '../../components/main/white'
 import { useBack, scaleHeight, scaleWidth, isTablet } from '../../constants/size'
-import { RootStackParamList } from '../../types/navigation'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
 import { images } from '../../constants/images'
 import PullBar from '../../components/pullbar'
@@ -11,7 +10,7 @@ import PullBar from '../../components/pullbar'
 
 
 const Privacy = () => {
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const navigation = useNavigation();
     useBack(navigation);
 
     const section2 = [

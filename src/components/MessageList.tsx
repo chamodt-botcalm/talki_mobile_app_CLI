@@ -13,18 +13,12 @@ import {
 import { Swipeable } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
 import { images } from '../constants/images';
-import { MessageStackParamList } from '../types/navigation';
 import {CompositeNavigationProp} from '@react-navigation/native';
 
-
 import { create } from "zustand";
+import { screenMap } from '../constants/screenMap';
 
-type CombinedNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<RootStackParamList>,
-  NativeStackNavigationProp<MessageStackParamList>
->;
 
 interface MessageListProps {
   onChatSelect?: (chatId: string) => void;
@@ -61,7 +55,7 @@ const MessageList: React.FC<MessageListProps> = ({
   onChatSelect,
   
 }) => {
-  const navigation = useNavigation<CombinedNavigationProp>();
+  const navigation = useNavigation<any>();
   const { setTotalMessages } = useMessageStore();
 
   const [messageData, setMessageData] = useState(initialMessageData);
@@ -156,7 +150,7 @@ const MessageList: React.FC<MessageListProps> = ({
                   if (onChatSelect) {
                     onChatSelect(item.id);
                   } else {
-                    navigation.navigate("MessageStack", {screen: "MessageScreen",});
+                    navigation.navigate(screenMap.messageScreen);
                   }
                 }}
               >

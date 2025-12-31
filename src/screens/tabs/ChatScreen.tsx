@@ -5,15 +5,14 @@ import { Animated, BackHandler, Dimensions, ScrollView, View, Image, Pressable, 
 import StoryView from '../../components/StoryView';
 import MessageScreen from '../message/Message_Screen';
 import PullBar from '../../components/pullbar'
-import { TabParamList } from '../../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../../constants/images';
+import { screenMap } from '../../constants/screenMap';
 
-type NavigationProp = NativeStackNavigationProp<TabParamList>;
 
 export default function ChatScreen() {
 
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation();
 
    
     const [selectedChat, setSelectedChat] = useState<string | null>(null);
@@ -100,7 +99,7 @@ export default function ChatScreen() {
                     top: scaleHeight(45),
                     gap: scaleWidth(10),
                 }}>
-                    <TouchableOpacity onPress={()=>navigation.navigate('CallScreen')}>
+                    <TouchableOpacity onPress={()=>navigation.navigate(screenMap.callScreen)}>
                     <Image source={images.telephone}
                         style={{
                             width: 30,
@@ -190,7 +189,7 @@ export default function ChatScreen() {
                 top:dimensions.height * 0.05,
                 gap: scaleWidth(10),
             }}>
-                <TouchableOpacity onPress={()=>navigation.navigate('CallScreen')}>
+                <TouchableOpacity onPress={()=>navigation.navigate(screenMap.callScreen)}>
                 <Image source={images.telephone}
                     style={{
                         width: 17,

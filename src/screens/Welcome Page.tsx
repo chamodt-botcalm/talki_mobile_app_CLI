@@ -12,9 +12,13 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
 import { images } from '../constants/images';
 import { scaleHeight } from '../constants/size';
+import { screenMap } from '../constants/screenMap';
+
+type RootStackParamList = {
+  [key: string]: undefined;
+};
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -199,7 +203,7 @@ export default function WelcomePage() {
                                         : scaleHeight(60),
                                 },
                             ]}
-                            onPress={() => navigation.navigate('ConnectWallet')}
+                            onPress={() => navigation.navigate(screenMap.connectWallet as keyof RootStackParamList)}
                         >
                             <Text style={[styles.buttonText, { fontSize: scale * 16 }]}>
                                 Import
@@ -263,7 +267,7 @@ export default function WelcomePage() {
                                         height: scaleHeight(60),
                                     },
                                 ]}
-                                onPress={() => navigation.navigate('UserAccount')}
+                                onPress={() => navigation.navigate(screenMap.setProfile as keyof RootStackParamList)}
                             >
                                 <Text style={[styles.buttonText, { fontSize: scale * 16 }]}>
                                     Create Wallet
@@ -294,7 +298,7 @@ export default function WelcomePage() {
                                     height: scaleHeight(60),
                                 },
                             ]}
-                            onPress={() => navigation.navigate('ConnectWallet')}
+                            onPress={() => navigation.navigate(screenMap.connectWallet as keyof RootStackParamList)}
                         >
                             <Text style={[styles.buttonText, { fontSize: scale * 16 }]}>
                                 Connect Wallet

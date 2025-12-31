@@ -3,21 +3,14 @@ import React, { useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { CompositeNavigationProp } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { TabParamList, MessageStackParamList, RootStackParamList } from '../types/navigation'
 import { images } from '../constants/images'
 import { scaleHeight, scaleWidth } from '../constants/size'
 import LinearGradient from 'react-native-linear-gradient'
 
-type CombinedNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<RootStackParamList>,
-  CompositeNavigationProp<
-    NativeStackNavigationProp<TabParamList>,
-    NativeStackNavigationProp<MessageStackParamList>
-  >
->;
+
 
 const IncomingAudioCalling = () => {
-  const navigation = useNavigation<CombinedNavigationProp>();
+  const navigation = useNavigation();
   const imageStyle={height:scaleHeight(20),width:scaleWidth(20),tintColor:'white'}
   
   useEffect(() => {

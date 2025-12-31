@@ -3,23 +3,16 @@ import React, { useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { CompositeNavigationProp } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { TabParamList, MessageStackParamList, RootStackParamList } from '../types/navigation'
 import { images } from '../constants/images'
 import { scaleHeight, scaleWidth } from '../constants/size'
 import AudioCallController from '../components/Audio_Call_Controller'
 import LinearGradient from 'react-native-linear-gradient'
 
-type CombinedNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<RootStackParamList>,
-  CompositeNavigationProp<
-    NativeStackNavigationProp<TabParamList>,
-    NativeStackNavigationProp<MessageStackParamList>
-  >
->;
+
 
 
 const AudioCallAnswer = () => {
-  const navigation = useNavigation<CombinedNavigationProp>();
+  const navigation = useNavigation();
   useEffect(() => {
       const backAction = () => {
         navigation.goBack();

@@ -6,23 +6,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import SettingsScreenIcon from '../../components/settingsScreen/settingsScreenIcon';
 import PullBar from '../../components/pullbar';
 import Modal from 'react-native-modal';
-import { RootStackParamList } from '../../types/navigation';
-import { TabParamList } from '../../types/navigation';
-import { MessageStackParamList } from '../../types/navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { CompositeNavigationProp } from '@react-navigation/native';
 import { images } from '../../constants/images';
+import { screenMap } from '../../constants/screenMap';
 
-type CombinedNavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<RootStackParamList>,
-  CompositeNavigationProp<
-    NativeStackNavigationProp<TabParamList>,
-    NativeStackNavigationProp<MessageStackParamList>
-  >
->;
+
 
 const SettingsScreen = () => {
-  const navigation = useNavigation<CombinedNavigationProp>();
+  const navigation = useNavigation();
 
   const [dimensions, setDimensions] = useState({
     width: Dimensions.get('window').width,
@@ -163,10 +155,10 @@ const SettingsScreen = () => {
   ];
 
   const settingsOptions = [
-    { icon: images.notification, title: 'Notifications and Sounds', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Notifications' },
-    { icon: images.privacy, title: 'Privacy and Security', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Privacy' },
-    { icon: images.storage, title: 'Data and Storage', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Storage' },
-    { icon: images.appearance, title: 'Appearance', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: 'Apperance' },
+    { icon: images.notification, title: 'Notifications and Sounds', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: screenMap.notifications },
+    { icon: images.privacy, title: 'Privacy and Security', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: screenMap.privacy },
+    { icon: images.storage, title: 'Data and Storage', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: screenMap.storage },
+    { icon: images.appearance, title: 'Appearance', stylee: styles.borderbottom, mh: { marginHorizontal: 25 }, link: screenMap.appearance },
     { icon: images.language, title: 'Language', link: 'Language' },
   ];
 
@@ -193,7 +185,7 @@ const SettingsScreen = () => {
         <View style={[styles.row2, { gap: 10 }]}>
           <Image source={images.telephone}
             style={[styles.image2]} />
-            <TouchableOpacity onPress={()=>navigation.navigate('Deposite')}>
+            <TouchableOpacity onPress={()=>navigation.navigate(screenMap.deposit)}>
           <Image source={images.plu}
             style={[styles.image2]} /></TouchableOpacity>
         </View>
@@ -206,7 +198,7 @@ const SettingsScreen = () => {
           paddingBottom: 110
         }}>
           {/* Profile Header */}
-          <TouchableOpacity onPress={() => navigation.navigate('SettingsInfo' as any)}>
+          <TouchableOpacity onPress={() => navigation.navigate(screenMap.settingsInfo as any)}>
             <View style={[styles.row1, { marginTop: scaleHeight(29) }]}>
               <View style={styles.row2}>
                 <ProfilePic width={66} height={66} borderWidth={2} />
