@@ -14,12 +14,25 @@ import {
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import MessageCountBadge from './messagecountbadge';
 import { images } from '../constants/images';
+import TransferSheet from './attachment/TransferSheet';
+
+type ActionKey =
+  | 'gallery'
+  | 'document'
+  | 'audio'
+  | 'location'
+  | 'contact'
+  | 'poll'
+  | 'transfer';
 
 const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   const { width, height } = useWindowDimensions();
   const dimensions = { width, height };
 
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
+
+  // ✅ NEW: which action page is open inside the modal
+  const [activeAction, setActiveAction] = useState<ActionKey>('gallery');
 
   // Base dimensions
   const BASE_WIDTH = 430;
@@ -46,7 +59,6 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
   // ---------------------------
   const sheetProgress = useRef(new Animated.Value(0)).current;
 
-  // ✅ Your actual bottom nav height (same as the container height below)
   const NAV_HEIGHT = scaleHeight(90);
 
   const PANEL_WIDTH = useMemo(() => {
@@ -69,6 +81,8 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
   });
 
   const openSheet = () => {
+    // ✅ default page when opening
+    setActiveAction('gallery');
     setShowAttachmentModal(true);
   };
 
@@ -108,10 +122,9 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
   const GRID_PADDING = scaleWidth(12);
   const gridAreaWidth = PANEL_WIDTH - GRID_PADDING * 2;
 
-  // 3 columns like screenshot
+  // 3 columns
   const tileSize = Math.floor((gridAreaWidth - GRID_GAP * 2) / 3);
 
-  // camera tile is 1x2
   const cameraTileStyle = {
     width: tileSize,
     height: tileSize * 2 + GRID_GAP,
@@ -129,8 +142,18 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
     overflow: 'hidden' as const,
   };
 
-  const ActionBtn = ({ label, imagee }: { label: string; imagee: any }) => (
-    <TouchableOpacity style={{ alignItems: 'center', width: scaleWidth(54) }}>
+  const ActionBtn = ({
+    label,
+    imagee,
+    isActive,
+    onPress,
+  }: {
+    label: string;
+    imagee: any;
+    isActive: boolean;
+    onPress: () => void;
+  }) => (
+    <TouchableOpacity onPress={onPress} style={{ alignItems: 'center', width: scaleWidth(54) }}>
       <View
         style={{
           width: scaleWidth(44),
@@ -139,17 +162,109 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
           backgroundColor: '#111111',
           alignItems: 'center',
           justifyContent: 'center',
+          // ✅ optional active ring
+          borderWidth: isActive ? 2 : 0,
+          borderColor: isActive ? '#D9FD00' : 'transparent',
         }}
       >
-       <Image source={imagee} style={{ resizeMode: 'contain',width:scaleWidth(20),height:scaleHeight(20) }} />
+        <Image
+          source={imagee}
+          style={{
+            resizeMode: 'contain',
+            width: scaleWidth(20),
+            height: scaleHeight(20),
+            tintColor: isActive ? '#D9FD00' : undefined,
+          }}
+        />
       </View>
-      <Text style={{ marginTop: scaleHeight(6), fontSize: scaleWidth(11), color: '#8E8E93' }}>
+      <Text
+        style={{
+          marginTop: scaleHeight(6),
+          fontSize: scaleWidth(11),
+          color: isActive ? '#111' : '#8E8E93',
+          fontWeight: isActive ? '800' : '400',
+        }}
+      >
         {label}
       </Text>
     </TouchableOpacity>
   );
 
   const totalMessages = 1;
+
+  // ✅ helper: render the main panel content based on activeAction
+  const renderPanelBody = () => {
+    if (activeAction === 'transfer') {
+      return (
+        <TransferSheet
+          scaleWidth={scaleWidth}
+          scaleHeight={scaleHeight}
+          onCancel={closeSheet}
+        />
+      );
+    }
+
+    // Default: Gallery grid (your existing content)
+    return (
+      <View style={{ flex: 1 }}>
+        {/* Header */}
+        <View
+          style={{
+            height: scaleHeight(44),
+            backgroundColor: '#DCDCDC',
+            paddingHorizontal: scaleWidth(14),
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <TouchableOpacity onPress={closeSheet}>
+            <Text style={{ fontSize: scaleWidth(14), color: '#111' }}>Cancel</Text>
+          </TouchableOpacity>
+
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: scaleWidth(14), color: '#111' }}>Recents ⌄</Text>
+          </View>
+
+          <View style={{ width: scaleWidth(60) }} />
+        </View>
+
+        {/* Grid */}
+        <View style={{ flex: 1, padding: GRID_PADDING }}>
+          <View style={{ flexDirection: 'row', gap: GRID_GAP }}>
+            {/* Camera tile (1x2) */}
+            <TouchableOpacity activeOpacity={0.85} style={cameraTileStyle} onPress={() => {}}>
+              <Text style={{ fontSize: scaleWidth(34) }}>📷</Text>
+            </TouchableOpacity>
+
+            {/* Right side photos */}
+            <View style={{ flex: 1 }}>
+              <View style={{ flexDirection: 'row', gap: GRID_GAP }}>
+                <View style={{ gap: GRID_GAP }}>
+                  {mockPhotos.slice(0, 3).map((p) => (
+                    <TouchableOpacity key={p.id} style={photoTileStyle} />
+                  ))}
+                </View>
+
+                <View style={{ gap: GRID_GAP }}>
+                  {mockPhotos.slice(3, 6).map((p) => (
+                    <TouchableOpacity key={p.id} style={photoTileStyle} />
+                  ))}
+                </View>
+              </View>
+
+              {/* Bottom row */}
+              <View style={{ flexDirection: 'row', gap: GRID_GAP, marginTop: GRID_GAP }}>
+                {mockPhotos.slice(6, 8).map((p) => (
+                  <TouchableOpacity key={p.id} style={photoTileStyle} />
+                ))}
+                <TouchableOpacity style={photoTileStyle} />
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View
@@ -164,7 +279,7 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: scaleWidth(12),
-        height: NAV_HEIGHT, // ✅ same height used above
+        height: NAV_HEIGHT,
         zIndex: 10,
       }}
     >
@@ -266,9 +381,7 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
         />
       </View>
 
-      {/* ---------------------------
-          Attachment Modal (PHOTO-LIKE)
-         --------------------------- */}
+      {/* Attachment Modal */}
       <Modal
         visible={showAttachmentModal}
         transparent
@@ -276,9 +389,8 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
         onRequestClose={closeSheet}
         presentationStyle="overFullScreen"
       >
-        {/* ✅ Root must allow touches to pass where we don't cover (nav area) */}
         <View style={{ flex: 1 }} pointerEvents="box-none">
-          {/* ✅ Overlay (STOP above the bottom nav) */}
+          {/* Overlay */}
           <Pressable
             onPress={closeSheet}
             style={{
@@ -286,7 +398,7 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
               top: 0,
               left: 0,
               right: 0,
-              bottom: scaleHeight(60), // ✅ key: nav area is not dark
+              bottom: scaleHeight(60),
               zIndex: 0,
             }}
           >
@@ -302,7 +414,6 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
               right: scaleWidth(0),
               bottom: scaleHeight(50),
               alignItems: 'center',
-
             }}
           >
             <Animated.View
@@ -315,68 +426,8 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
                 overflow: 'hidden',
               }}
             >
-              {/* Header */}
-              <View
-                style={{
-                  height: scaleHeight(44),
-                  backgroundColor: '#DCDCDC',
-                  paddingHorizontal: scaleWidth(14),
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <TouchableOpacity onPress={closeSheet}>
-                  <Text style={{ fontSize: scaleWidth(14), color: '#111' }}>Cancel</Text>
-                </TouchableOpacity>
-
-                <View style={{ flex: 1, alignItems: 'center' }}>
-                  <Text style={{ fontSize: scaleWidth(14), color: '#111' }}>Recents ⌄</Text>
-                </View>
-
-                {/* right spacer to keep center title truly centered */}
-                <View style={{ width: scaleWidth(60) }} />
-              </View>
-
-              {/* Grid */}
-              <View style={{ flex: 1, padding: GRID_PADDING }}>
-                <View style={{ flexDirection: 'row', gap: GRID_GAP }}>
-                  {/* Camera tile (1x2) */}
-                  <TouchableOpacity
-                    activeOpacity={0.85}
-                    style={cameraTileStyle}
-                    onPress={() => {
-                      // TODO: open camera
-                    }}
-                  >
-                    <Text style={{ fontSize: scaleWidth(34) }}>📷</Text>
-                  </TouchableOpacity>
-
-                  {/* Right side photos */}
-                  <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: 'row', gap: GRID_GAP }}>
-                      <View style={{ gap: GRID_GAP }}>
-                        {mockPhotos.slice(0, 3).map((p) => (
-                          <TouchableOpacity key={p.id} style={photoTileStyle} />
-                        ))}
-                      </View>
-
-                      <View style={{ gap: GRID_GAP }}>
-                        {mockPhotos.slice(3, 6).map((p) => (
-                          <TouchableOpacity key={p.id} style={photoTileStyle} />
-                        ))}
-                      </View>
-                    </View>
-
-                    {/* Bottom row */}
-                    <View style={{ flexDirection: 'row', gap: GRID_GAP, marginTop: GRID_GAP }}>
-                      {mockPhotos.slice(6, 8).map((p) => (
-                        <TouchableOpacity key={p.id} style={photoTileStyle} />
-                      ))}
-                      <TouchableOpacity style={photoTileStyle} />
-                    </View>
-                  </View>
-                </View>
-              </View>
+              {/* ✅ BODY CHANGES HERE */}
+              {renderPanelBody()}
 
               {/* Bottom Actions */}
               <View
@@ -388,18 +439,53 @@ const MessageBottomTab = ({ state, descriptors, navigation }: BottomTabBarProps)
                 }}
               >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <ActionBtn label="Gallery" imagee={images.gallery} />
-                  <ActionBtn label="Document" imagee={images.gallery} />
-                  <ActionBtn label="Audio" imagee={images.gallery} />
-                  <ActionBtn label="Location" imagee={images.gallery} />
-                  <ActionBtn label="Contact" imagee={images.gallery}/>
-                  <ActionBtn label="Poll" imagee={images.gallery} />
-                  <ActionBtn label="Transfer" imagee={images.gallery} />
+                  <ActionBtn
+                    label="Gallery"
+                    imagee={images.gallery}
+                    isActive={activeAction === 'gallery'}
+                    onPress={() => setActiveAction('gallery')}
+                  />
+                  <ActionBtn
+                    label="Document"
+                    imagee={images.document}
+                    isActive={activeAction === 'document'}
+                    onPress={() => setActiveAction('document')}
+                  />
+                  <ActionBtn
+                    label="Audio"
+                    imagee={images.audio}
+                    isActive={activeAction === 'audio'}
+                    onPress={() => setActiveAction('audio')}
+                  />
+                  <ActionBtn
+                    label="Location"
+                    imagee={images.location}
+                    isActive={activeAction === 'location'}
+                    onPress={() => setActiveAction('location')}
+                  />
+                  <ActionBtn
+                    label="Contact"
+                    imagee={images.contact}
+                    isActive={activeAction === 'contact'}
+                    onPress={() => setActiveAction('contact')}
+                  />
+                  <ActionBtn
+                    label="Poll"
+                    imagee={images.poll}
+                    isActive={activeAction === 'poll'}
+                    onPress={() => setActiveAction('poll')}
+                  />
+                  <ActionBtn
+                    label="Transfer"
+                    imagee={images.transfer}
+                    isActive={activeAction === 'transfer'}
+                    onPress={() => setActiveAction('transfer')}
+                  />
                 </View>
               </View>
             </Animated.View>
 
-            {/* Small bottom pointer */}
+            {/* Pointer */}
             <View
               style={{
                 width: 0,

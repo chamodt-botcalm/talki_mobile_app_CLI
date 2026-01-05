@@ -65,7 +65,7 @@ const Transfer = ({ visible, onClose }: TransferProps) => {
       startSpinning()
 
       // ✅ Replace with your real API call
-      await new Promise((resolve) => setTimeout(resolve, 1800))
+      await new Promise<void>((resolve) => setTimeout(resolve, 1800))
 
       stopSpinning()
       setIsLoading(false)
