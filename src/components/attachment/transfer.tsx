@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react'
 import { scaleHeight, scaleWidth } from '../../constants/size'
 import { images } from '../../constants/images'
+import Button from '../reusable/Button'
 
 const SHEET_HEIGHT = scaleHeight(295)
 
@@ -124,16 +125,14 @@ const Transfer = ({ visible, onClose }: TransferProps) => {
               </View>
             </View>
 
-            <TouchableOpacity
-              style={[styles.transferButton, isLoading && styles.transferButtonDisabled]}
-              activeOpacity={0.8}
+            <Button
+              style={[{ marginTop: scaleHeight(20) }, isLoading && { opacity: 0.5 }]}
+              fontSize={18}
               disabled={isLoading}
               onPress={handleTransfer}
             >
-              <Text style={styles.transferButtonText}>
-                {isLoading ? 'Transfer...' : 'Transfer'}
-              </Text>
-            </TouchableOpacity>
+              {isLoading ? 'Transfer...' : 'Transfer'}
+            </Button>
           </View>
 
           {/* ✅ Loading overlay + rotating image */}

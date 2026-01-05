@@ -14,6 +14,7 @@ import WhiteBackground from '../../components/main/white';
 import { images } from '../../constants/images';
 import PullBar from '../../components/pullbar';
 import { isTablet } from '../../constants/size';
+import { isTabletMode } from 'react-native-device-info';
 
 const ContactScreen = () => {
     const contacts = [
@@ -84,7 +85,7 @@ const ContactScreen = () => {
             </View>
 
             <WhiteBackground height={isTablet?scaleHeight(1033):scaleHeight(811)}>
-                <View style={{ height: scaleHeight(11) }} />
+                <View style={{ height:scaleHeight(11) }} />
                 <PullBar width={scaleWidth(62.5)} height={scaleHeight(6)} />
 
                 <View>

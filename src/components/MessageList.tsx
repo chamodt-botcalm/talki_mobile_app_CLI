@@ -18,6 +18,7 @@ import {CompositeNavigationProp} from '@react-navigation/native';
 
 import { create } from "zustand";
 import { screenMap } from '../constants/screenMap';
+import { scaleHeight, scaleWidth } from '../constants/size';
 
 
 interface MessageListProps {
@@ -118,12 +119,15 @@ const MessageList: React.FC<MessageListProps> = ({
   const renderRightActions = (id: string) => (
     <View style={styles.actionsContainer}>
       <Pressable style={styles.muteBtn}>
+        <Image source={images.mutee} style={styles.image}/>
         <Text style={styles.muteText}>Mute</Text>
       </Pressable>
       <Pressable style={styles.deleteBtn} onPress={() => deleteMessage(id)}>
+         <Image source={images.deletee} style={[styles.image, {width:scaleWidth(20),height:scaleHeight(28)}]}/>
         <Text style={styles.deleteText}>Delete</Text>
       </Pressable>
       <Pressable style={styles.archiveBtn}>
+         <Image source={images.archivee} style={styles.image}/>
         <Text style={styles.archiveText}>Archive</Text>
       </Pressable>
     </View>
@@ -307,6 +311,8 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   muteBtn: {
+    flexDirection:'column',
+     gap:scaleHeight(9),
     borderTopEndRadius: 10,
     borderBottomEndRadius: 10,
     backgroundColor: '#232323',
@@ -322,6 +328,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   deleteBtn: {
+    flexDirection:'column',
+    gap:scaleHeight(9),
     borderTopEndRadius: 10,
     borderBottomEndRadius: 10,
     backgroundColor: '#DBFF00',
@@ -339,6 +347,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   archiveBtn: {
+    flexDirection:'column',
+     gap:scaleHeight(9),
     backgroundColor: '#BBBBC3',
     justifyContent: 'center',
     alignItems: 'center',
@@ -350,4 +360,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  image:{
+    width:scaleWidth(25),
+    height:scaleHeight(25),
+  }
 });

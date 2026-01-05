@@ -10,6 +10,7 @@ import {
   TextInput,
 } from 'react-native'
 import { scaleWidth, scaleHeight } from '../constants/size'
+import Button from '../components/reusable/Button'
 
 const Deposite = () => {
   const [amount, setAmount] = useState('0.20')
@@ -92,9 +93,9 @@ const Deposite = () => {
         </View>
 
         {/* Deposit Button */}
-        <TouchableOpacity style={styles.depositButton}>
-          <Text style={styles.depositButtonText}>Deposit</Text>
-        </TouchableOpacity>
+        <Button fontSize={18}>
+          Deposit
+        </Button>
 
 
       </View>

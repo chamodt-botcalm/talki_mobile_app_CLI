@@ -21,7 +21,6 @@ export default function MessageStackNavigator() {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        animationEnabled: true,
       }}
     >
       {/* Main Message List */}

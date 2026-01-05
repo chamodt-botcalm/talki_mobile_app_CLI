@@ -231,7 +231,10 @@ const Apperance = () => {
                     </View>
 
                     {/* Theme Options */}
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {isTablet ? (
+                        <ScrollView 
+                            horizontal 
+                            showsHorizontalScrollIndicator={false}>
                         <View style={styles.themeContainer}>
                             {themeOptions.map((theme, index) => (
                                 <ThemeOption
@@ -243,8 +246,28 @@ const Apperance = () => {
                                     isSelected={selectedTheme === theme.name}
                                 />
                             ))}
-                        </View>
-                    </ScrollView>
+                        </View></ScrollView>
+                    ) : (
+                        <ScrollView 
+                            horizontal 
+                            showsHorizontalScrollIndicator={false}
+                            style={styles.themeScrollView}
+                            contentContainerStyle={styles.themeScrollContent}
+                        >
+                            <View style={styles.themeContainer}>
+                                {themeOptions.map((theme, index) => (
+                                    <ThemeOption
+                                        key={index}
+                                        name={theme.name}
+                                        colors={theme.colors}
+                                        bg={theme.bg}
+                                        bdc={theme.bdc}
+                                        isSelected={selectedTheme === theme.name}
+                                    />
+                                ))}
+                            </View>
+                        </ScrollView>
+                    )}
                     <View
                         style={{
                             backgroundColor: '#C6C6C8',
@@ -298,7 +321,7 @@ const Apperance = () => {
 
                     {/* App Icons */}
                     <View style={styles.borders}>
-                        <View style={styles.iconContainer2}>
+                        <View style={[styles.iconContainer2, isTablet && { justifyContent: 'space-between', paddingHorizontal: scaleWidth(60) }]}>
                             {iconOptions.map((icon, index) => (
                                 <IconOption
                                     key={index}
@@ -321,7 +344,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingVertical: 13,
-        paddingHorizontal: 15,
+        paddingHorizontal:isTablet?scaleWidth(42): scaleWidth(15),
     },
     row2: {
         flexDirection: 'row',
@@ -365,21 +388,22 @@ const styles = StyleSheet.create({
     sectionHeader: {
         fontSize: 16,
         color: '#636366',
-        marginLeft: scaleWidth(18),
+        marginLeft:isTablet?scaleWidth(42): scaleWidth(18),
         marginTop: scaleHeight(29),
         marginBottom: scaleHeight(15),
         textTransform: 'uppercase',
     },
     chatPreview: {
-        marginHorizontal: scaleWidth(18),
+        marginHorizontal: isTablet?scaleWidth(42):scaleWidth(18),
         marginBottom: scaleHeight(34),
+       
     },
     messageContainer: {
         backgroundColor: '#D9FD00',
         padding: 10,
         borderRadius: 30,
         marginBottom: 8,
-        maxWidth: '80%',
+        maxWidth: isTablet?'50%':'80%',
     },
     receivedMessage: {
         backgroundColor: '#2C2C2E',
@@ -402,9 +426,10 @@ const styles = StyleSheet.create({
     },
     themeContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginHorizontal: scaleWidth(18),
+        justifyContent: isTablet ? 'space-around' : 'space-around',
+        marginHorizontal: scaleWidth(94),
         marginBottom: scaleHeight(20),
+        flexWrap: isTablet ? 'wrap' : 'nowrap',
     },
     themeOption: {
         alignItems: 'center',
@@ -415,17 +440,20 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     themePreview: {
-        width: 80,
-        height: 60,
+        width: isTablet ? scaleWidth(139) : scaleWidth(112),
+        height: isTablet ? 80 : 90,
         borderRadius: 12,
         padding: 8,
         marginBottom: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     messageBubble: {
-        height: 12,
+        height: isTablet?scaleHeight(12):scaleHeight(12),
         borderRadius: 6,
         marginBottom: 4,
         width: '70%',
+      
     },
     themeLabel: {
         fontSize: 14,
@@ -436,6 +464,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: scaleHeight(20),
         marginHorizontal: scaleWidth(18),
+        justifyContent: isTablet ? 'center' : 'flex-start',
     },
     sliderContainer: {
         position: 'relative',
@@ -513,8 +542,9 @@ const styles = StyleSheet.create({
     },
     iconContainer2: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginHorizontal: scaleWidth(18),
+        alignSelf:'center',
+        marginHorizontal:isTablet?scaleWidth(200): scaleWidth(18),
+        gap:isTablet?scaleWidth(55):scaleWidth(37),
         marginVertical: scaleHeight(18),
     },
     iconOption: {
@@ -547,6 +577,14 @@ const styles = StyleSheet.create({
         borderBottomColor: '#C6C6C8',
         borderBottomWidth: 1,
         borderTopWidth: 1,
+    },
+    themeScrollView: {
+        height: scaleHeight(200),
+        marginVertical: scaleHeight(10),
+    },
+    themeScrollContent: {
+        paddingHorizontal: scaleWidth(18),
+        paddingVertical: scaleHeight(10),
     },
 });
 

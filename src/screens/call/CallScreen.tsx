@@ -69,7 +69,7 @@ const CallScreen = () => {
       alignItems:'center',
       marginHorizontal:14,
       justifyContent:'space-between',
-      marginTop:scaleHeight(73)
+      marginTop:isTablet?scaleHeight(110): scaleHeight(73)
      },
      row2:{
       flexDirection:'row',
@@ -97,7 +97,7 @@ const CallScreen = () => {
             <Image source={images.plu} style={[styles.image,{resizeMode:'contain'}]}/>
           </View>
           </View>
-        <WhiteBackground height={scaleHeight(811)}>
+        <WhiteBackground height={isTablet?scaleHeight(1033): scaleHeight(811)}>
          <View style={{alignSelf:'center', marginTop:scaleHeight(11)}}>
         <PullBar width={scaleWidth(62.5)} height={scaleHeight(6)}/></View>
           <CallList/>

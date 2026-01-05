@@ -6,6 +6,7 @@ import BottomNavigator from '../components/BottomNavigator';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../constants/images';
 import { screenMap } from '../constants/screenMap';
+import Button from '../components/reusable/Button';
 
 type RootStackParamList = {
   [key: string]: undefined;
@@ -214,25 +215,19 @@ export default function UserAccount() {
                             }} />
                         </View>
                     </View>
-                    <View style={{
-                        position: 'absolute',
-                        bottom: isTablet ? scaleHeight(116) : scaleHeight(80),
-                        left: isTablet ? (dimensions.width - scaleWidth(490)) / 2 : (dimensions.width - scaleWidth(371)) / 2
-                    }}>
-                        <Pressable
-                            style={{
-                                backgroundColor: '#DBFF00',
-                                width: isTablet ? scaleWidth(490) : scaleWidth(371),
-                                height: isTablet ? scaleHeight(60) : scaleHeight(50),
-                                borderRadius: scale * 5,
-                                justifyContent: 'center'
-                            }} onPress={() => navigation.navigate(screenMap.mainTabs)}
-                        >
-                            <Text style={{ color: 'black', fontSize: scale * 20, textAlign: 'center', fontFamily: 'Inter', }}>
-                                Done
-                            </Text>
-                        </Pressable>
-                    </View>
+                    <Button
+                        style={{
+                            position: 'absolute',
+                            bottom: isTablet ? scaleHeight(116) : scaleHeight(80),
+                            left: isTablet ? (dimensions.width - scaleWidth(490)) / 2 : (dimensions.width - scaleWidth(371)) / 2
+                        }}
+                        width={isTablet ? scaleWidth(490) : scaleWidth(371)}
+                        height={isTablet ? scaleHeight(73) : scaleHeight(60)}
+                        fontSize={scale * 20}
+                        onPress={() => navigation.navigate(screenMap.mainTabs)}
+                    >
+                        Done
+                    </Button>
                 </View>
             </Animated.View>
         </View>

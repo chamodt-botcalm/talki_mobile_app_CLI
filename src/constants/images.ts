@@ -49,7 +49,6 @@ export const images = {
   pluss: require('../../assets/images/pluss.png'),
   privacy: require('../../assets/images/privacy.png'),
   qrcode: require('../../assets/images/qrcode.png'),
-
   recentCalls: require('../../assets/images/recentCalls.png'),
   rock: require('../../assets/images/rock.svg'),
   rockk: require('../../assets/images/rockk.png'),
@@ -95,4 +94,7 @@ export const images = {
   poll:require('../../assets/images/poll.png'),
   transfer:require('../../assets/images/transfer.png'),
   loader_circle:require('../../assets/images/loader-circle.png'),
+  mutee:require('../../assets/images/mutee.png'),
+  deletee:require('../../assets/images/deletee.png'),
+  archivee:require('../../assets/images/archivee.png'),
 };

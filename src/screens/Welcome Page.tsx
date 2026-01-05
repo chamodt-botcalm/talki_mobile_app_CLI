@@ -15,16 +15,18 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../constants/images';
 import { scaleHeight } from '../constants/size';
 import { screenMap } from '../constants/screenMap';
+import Typography from '../components/reusable/Typography';
+import Button from '../components/reusable/Button';
 
 type RootStackParamList = {
-  [key: string]: undefined;
+    [key: string]: undefined;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function WelcomePage() {
     const navigation = useNavigation<NavigationProp>();
-   
+
     const [showCreateWallet, setShowCreateWallet] = useState(false);
     const [showImportAccount, setShowImportAccount] = useState(false);
 
@@ -84,7 +86,7 @@ export default function WelcomePage() {
     );
 
     return (
-        
+
         <View style={styles.container} >
 
             {/* Top Background Image */}
@@ -130,31 +132,33 @@ export default function WelcomePage() {
                         },
                     ]}
                 >
-                    <Text
-                        style={[
-                            styles.logoText,
-                            { fontSize: isTablet ? 170 * scale : 141 * scale },
-                        ]}
+                    <Typography
+                        green
+                        bold
+                        style={{ fontSize: isTablet ? 170 * scale : 141 * scale }}
                     >
                         talk
-                        <Text style={{ fontSize: isTablet ? 277 * scale : 229 * scale }}>
+                        <Typography green bold style={{ fontSize: isTablet ? 277 * scale : 229 * scale }}>
                             i
-                        </Text>
-                    </Text>
+                        </Typography>
+                    </Typography>
                 </View>
 
                 {/* Welcome Text */}
-                <Text
-                    style={[
-                        styles.title,
-                        {
-                            top: isTablet ? scaleHeight(134) : scaleHeight(70),
-                            fontSize: scale * 40,
-                        },
-                    ]}
+                <Typography
+                    center
+                    bold
+                    s40
+                    style={{
+                        position: 'absolute',
+                        top: isTablet ? scaleHeight(134) : scaleHeight(70),
+                        left: 0,
+                        right: 0,
+                        fontSize: scale * 40,
+                    }}
                 >
                     Welcome
-                </Text>
+                </Typography>
 
                 {/* ================== IMPORT ACCOUNT ================== */}
                 {showImportAccount && (
@@ -169,9 +173,9 @@ export default function WelcomePage() {
                             },
                         ]}
                     >
-                        <Text style={[styles.label, { fontSize: scale * 14 }]}>
+                        <Typography grey s14 style={{ fontSize: scale * 14, marginBottom: 6 }}>
                             Private key
-                        </Text>
+                        </Typography>
 
                         <TextInput
                             placeholder="Private key"
@@ -191,24 +195,14 @@ export default function WelcomePage() {
                             ]}
                         />
 
-                        <Pressable
-                            style={[
-                                styles.button,
-                                {
-                                    width: isTablet
-                                        ? scaleWidth(490)
-                                        : scaleWidth(371),
-                                    height: isTablet
-                                        ? scaleHeight(73)
-                                        : scaleHeight(60),
-                                },
-                            ]}
-                            onPress={() => navigation.navigate(screenMap.connectWallet as keyof RootStackParamList)}
+                        <Button
+                            width={isTablet ? scaleWidth(490) : scaleWidth(371)}
+                            height={isTablet ? scaleHeight(73) : scaleHeight(60)}
+                            fontSize={scale * 16}
+                            onPress={() => navigation.navigate(screenMap.connectWallet)}
                         >
-                            <Text style={[styles.buttonText, { fontSize: scale * 16 }]}>
-                                Import
-                            </Text>
-                        </Pressable>
+                            Import
+                        </Button>
                     </View>
                 )}
 
@@ -237,9 +231,9 @@ export default function WelcomePage() {
                                 },
                             ]}
                         >
-                            <Text style={[styles.label, { fontSize: scale * 14 }]}>
+                            <Typography grey s14 style={{ fontSize: scale * 14, marginBottom: 6 }}>
                                 Wallet Address
-                            </Text>
+                            </Typography>
 
                             <TextInput
                                 placeholder="0xb96cc255470............599"
@@ -257,22 +251,14 @@ export default function WelcomePage() {
                                 ]}
                             />
 
-                            <Pressable
-                                style={[
-                                    styles.button,
-                                    {
-                                        width: isTablet
-                                            ? scaleWidth(490)
-                                            : scaleWidth(371),
-                                        height: scaleHeight(60),
-                                    },
-                                ]}
-                                onPress={() => navigation.navigate(screenMap.setProfile as keyof RootStackParamList)}
+                            <Button
+                                width={isTablet ? scaleWidth(490) : scaleWidth(371)}
+                                height={scaleHeight(60)}
+                                fontSize={scale * 16}
+                                onPress={() => navigation.navigate(screenMap.setProfile)}
                             >
-                                <Text style={[styles.buttonText, { fontSize: scale * 16 }]}>
-                                    Create Wallet
-                                </Text>
-                            </Pressable>
+                                Create Wallet
+                            </Button>
                         </View>
                     </>
                 )}
@@ -280,30 +266,24 @@ export default function WelcomePage() {
                 {/* ================== DEFAULT BUTTONS ================== */}
                 {!showCreateWallet && !showImportAccount && (
                     <>
-                        <Pressable
-                            style={[
-                                styles.button,
-                                {
-                                    position: 'absolute',
-                                    top: isTablet ? scaleHeight(403) : scaleHeight(181),
-                                    left:
-                                        (dimensions.width -
-                                            (isTablet
-                                                ? scaleWidth(490)
-                                                : scaleWidth(371))) /
-                                        2,
-                                    width: isTablet
-                                        ? scaleWidth(490)
-                                        : scaleWidth(371),
-                                    height: scaleHeight(60),
-                                },
-                            ]}
-                            onPress={() => navigation.navigate(screenMap.connectWallet as keyof RootStackParamList)}
+                        <Button
+                            style={{
+                                position: 'absolute',
+                                top: isTablet ? scaleHeight(403) : scaleHeight(181),
+                                left:
+                                    (dimensions.width -
+                                        (isTablet
+                                            ? scaleWidth(490)
+                                            : scaleWidth(371))) /
+                                    2,
+                            }}
+                            width={isTablet ? scaleWidth(490) : scaleWidth(371)}
+                            height={scaleHeight(60)}
+                            fontSize={scale * 16}
+                            onPress={() => navigation.navigate(screenMap.connectWallet)}
                         >
-                            <Text style={[styles.buttonText, { fontSize: scale * 16 }]}>
-                                Connect Wallet
-                            </Text>
-                        </Pressable>
+                            Connect Wallet
+                        </Button>
 
                         <View
                             style={[
@@ -314,46 +294,32 @@ export default function WelcomePage() {
                             ]}
                         >
                             {/* Create Wallet */}
-                            <Pressable
-                                style={[
-                                    styles.outlineButton,
-                                    {
-                                        width: isTablet
-                                            ? scaleWidth(238)
-                                            : scaleWidth(180),
-                                        height: scaleHeight(60),
-                                    },
-                                ]}
+                            <Button
+                                outline
+                                width={isTablet ? scaleWidth(238) : scaleWidth(180)}
+                                height={scaleHeight(60)}
+                                fontSize={scale * 16}
                                 onPress={() => setShowCreateWallet(true)}
                             >
-                                <Text style={[styles.outlineText, { fontSize: scale * 16 }]}>
-                                    Create Wallet
-                                </Text>
-                            </Pressable>
+                                Create Wallet
+                            </Button>
 
                             {/* Import */}
-                            <Pressable
-                                style={[
-                                    styles.outlineButton,
-                                    {
-                                        width: isTablet
-                                            ? scaleWidth(238)
-                                            : scaleWidth(180),
-                                        height: scaleHeight(60),
-                                    },
-                                ]}
+                            <Button
+                                outline
+                                width={isTablet ? scaleWidth(238) : scaleWidth(180)}
+                                height={scaleHeight(60)}
+                                fontSize={scale * 16}
                                 onPress={() => setShowImportAccount(true)}
                             >
-                                <Text style={[styles.outlineText, { fontSize: scale * 16 }]}>
-                                    Import Account
-                                </Text>
-                            </Pressable>
+                                Import Account
+                            </Button>
                         </View>
                     </>
                 )}
             </View>
         </View>
-        
+
     );
 }
 
@@ -365,7 +331,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#232323',
-        overflow:'hidden'
+        overflow: 'hidden'
     },
 
     topImage: {
@@ -385,7 +351,7 @@ const styles = StyleSheet.create({
 
     rockImage: {
         position: 'absolute',
-        bottom:scaleHeight(318)
+        bottom: scaleHeight(318)
     },
 
     logoWrapper: {
