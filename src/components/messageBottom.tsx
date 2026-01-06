@@ -135,7 +135,7 @@ export default function MessageBottom() {
             { transform: [{ translateY: inputY }] },
           ]}
         >
-          <InputBar onAttachPress={() => {}} />
+          <InputBar onAttachPress={hideSheet} />
         </Animated.View>
 
         {/* Sheet */}

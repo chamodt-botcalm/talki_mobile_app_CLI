@@ -6,7 +6,7 @@ import {
   ViewStyle,
   StyleProp,
 } from 'react-native';
-import Typography from './Typography';
+import Typography from './Text';
 
 interface ButtonProps extends Omit<PressableProps, 'style'> {
   children: ReactNode;

@@ -15,7 +15,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../constants/images';
 import { scaleHeight } from '../constants/size';
 import { screenMap } from '../constants/screenMap';
-import Typography from '../components/reusable/Typography';
+import Typography from '../components/reusable/Text';
 import Button from '../components/reusable/Button';
 
 type RootStackParamList = {
