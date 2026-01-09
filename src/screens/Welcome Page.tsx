@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useAppKit } from '@reown/appkit-react-native';
 import {
-    Alert,
     BackHandler,
     Dimensions,
     Image,
-    Pressable,
-    Text,
     TextInput,
     View,
     StyleSheet
@@ -26,6 +24,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function WelcomePage() {
     const navigation = useNavigation<NavigationProp>();
+    const { open } = useAppKit();
 
     const [showCreateWallet, setShowCreateWallet] = useState(false);
     const [showImportAccount, setShowImportAccount] = useState(false);
@@ -280,7 +279,7 @@ export default function WelcomePage() {
                             width={isTablet ? scaleWidth(490) : scaleWidth(371)}
                             height={scaleHeight(60)}
                             fontSize={scale * 16}
-                            onPress={() => navigation.navigate(screenMap.connectWallet)}
+                            onPress={() => open()}
                         >
                             Connect Wallet
                         </Button>

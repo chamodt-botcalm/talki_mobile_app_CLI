@@ -118,10 +118,10 @@ export default function MessageBottom() {
    
       <Transfer visible={showTransfer} onClose={() => setShowTransfer(false)} />
       
-      {/* ✅ Normal input (only when modal closed) */}
+      {/* Normal input (only when modal closed) */}
       {!open &&!isTablet && <InputBar onAttachPress={showSheet} />}
 
-      {/* ✅ Modal contains backdrop + input + sheet */}
+      {/*  Modal contains backdrop + input + sheet */}
       <Modal visible={open}
         animationType="slide"
         transparent={true} onRequestClose={hideSheet}>
