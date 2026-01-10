@@ -1,30 +1,35 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeJsonParse, safeJsonStringify } from '@walletconnect/safe-json';
+import type { Storage } from '@reown/appkit-react-native';
 
-export interface Storage {
-  getKeys(): Promise<string[]>;
-  getEntries<T = any>(): Promise<[string, T][]>;
-  getItem<T = any>(key: string): Promise<T | undefined>;
-  setItem<T = any>(key: string, value: T): Promise<void>;
-  removeItem(key: string): Promise<void>;
-}
-
+/**
+ * AppKit storage adapter (AsyncStorage)
+ *
+ * AppKit expects a `Storage` interface implementation.
+ * We use WalletConnect safe JSON helpers to avoid crashes on malformed values.
+ */
 export const storage: Storage = {
-  async getKeys() {
-    return await AsyncStorage.getAllKeys();
+  getKeys: async () => {
+    return (await AsyncStorage.getAllKeys()) as string[];
   },
-  async getEntries() {
+
+  getEntries: async <T = any>(): Promise<[string, T][]> => {
     const keys = await AsyncStorage.getAllKeys();
     const entries = await AsyncStorage.multiGet(keys);
-    return entries.map(([key, value]) => [key, JSON.parse(value || 'null')]);
+    return entries.map(([key, value]) => [key, safeJsonParse(value ?? '') as T]);
   },
-  async getItem(key: string) {
+
+  getItem: async <T = any>(key: string): Promise<T | undefined> => {
     const value = await AsyncStorage.getItem(key);
-    return value ? JSON.parse(value) : undefined;
+    if (typeof value === 'undefined' || value === null) return undefined;
+    return safeJsonParse(value) as T;
   },
-  async setItem(key: string, value: any) {
-    await AsyncStorage.setItem(key, JSON.stringify(value));
+
+  setItem: async <T = any>(key: string, value: T): Promise<void> => {
+    await AsyncStorage.setItem(key, safeJsonStringify(value));
   },
-  async removeItem(key: string) {
+
+  removeItem: async (key: string): Promise<void> => {
     await AsyncStorage.removeItem(key);
   },
 };

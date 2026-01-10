@@ -2,21 +2,23 @@ import React from 'react';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { NavigationContainer } from '@react-navigation/native';
 import AppContainer from './src/navigation/AppNavigator';
-import './src/config/walletConfig';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AppKitProvider } from '@reown/appkit-react-native';
+import { AppKit, AppKitProvider } from '@reown/appkit-react-native';
 import { appKit } from './src/AppKitConfig';
 
 export default function App() {
-  return(
+  return (
     <SafeAreaProvider>
-    <GestureHandlerRootView style={{flex: 1}}>
-      <NavigationContainer>
-         <AppKitProvider instance={appKit}>
-        <AppContainer/>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <AppKitProvider instance={appKit}>
+          <NavigationContainer>
+            <AppContainer />
+          </NavigationContainer>
+
+          {/* Required: renders AppKit modal + UI portal */}
+          <AppKit />
         </AppKitProvider>
-      </NavigationContainer>
-    </GestureHandlerRootView>
+      </GestureHandlerRootView>
     </SafeAreaProvider>
-  )
+  );
 }

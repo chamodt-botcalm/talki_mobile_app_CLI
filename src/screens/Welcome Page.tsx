@@ -84,6 +84,18 @@ export default function WelcomePage() {
         dimensions.height / currentBaseHeight
     );
 
+    const handleConnectWallet = () => {
+        // Open AppKit's connection modal directly on the Connect view.
+        // If anything goes wrong, fallback to your static ConnectWallet screen.
+        try {
+            open({ view: 'Connect' });
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.warn('AppKit open() failed', e);
+            navigation.navigate(screenMap.connectWallet);
+        }
+    };
+
     return (
 
         <View style={styles.container} >
@@ -279,7 +291,7 @@ export default function WelcomePage() {
                             width={isTablet ? scaleWidth(490) : scaleWidth(371)}
                             height={scaleHeight(60)}
                             fontSize={scale * 16}
-                            onPress={() => open()}
+                            onPress={handleConnectWallet}
                         >
                             Connect Wallet
                         </Button>
