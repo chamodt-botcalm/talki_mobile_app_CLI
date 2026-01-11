@@ -22,6 +22,8 @@
     "@reown/appkit-react-native": "^2.0.1",
     "@reown/appkit-solana-react-native": "^2.0.0",
     "@walletconnect/react-native-compat": "^2.23.1",
+    "axios": "^1.13.2",
+    "ethers": "^6.16.0",
     "react": "19.1.1",
     "react-native": "0.82.1",
     "react-native-device-info": "^15.0.1",
