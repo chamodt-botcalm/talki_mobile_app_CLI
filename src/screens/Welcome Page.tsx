@@ -161,7 +161,7 @@ export default function WelcomePage() {
                     bold
                     s40
                     style={{
-                        position: 'absolute',
+                        position: 'absolute ',
                         top: isTablet ? scaleHeight(134) : scaleHeight(70),
                         left: 0,
                         right: 0,
