@@ -1,10 +1,11 @@
-// WelcomePage.tsx
-// ✅ Full API-integrated version (fixed Import Account address-derivation)
-// - Connect Wallet (Reown AppKit) -> calls POST /newUser
-// - Create Wallet (talki) -> calls POST /newUser with walletId=null
-// - Import Account (private key -> derive address) -> calls POST /newUser
+// Welcome Page.tsx
+// ✅ Correct API-integrated version for your CURRENT backend (talki_backend-main)
+// Backend route: POST http://<IP>:3001/newUser
 //
-// NOTE: Import flow sends ONLY the derived address to your backend (NOT the private key).
+// Flows:
+// 1) Connect Wallet (AppKit) -> auto calls /newUser when connected
+// 2) Create Wallet (talki)   -> calls /newUser with walletId=null (backend creates Sepolia account)
+// 3) Import Account          -> privateKey -> derive address locally -> calls /newUser with walletId=<derived>
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -19,18 +20,17 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import {
-  useAppKit,
-  useAccount,
-  useWalletInfo,
-} from '@reown/appkit-react-native';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAppKit, useAccount, useWalletInfo } from '@reown/appkit-react-native';
 
 import { images } from '../constants/images';
 import { screenMap } from '../constants/screenMap';
 import Typography from '../components/reusable/Text';
 import Button from '../components/reusable/Button';
+
+import { newUser } from '../api/user';
+import { saveUser } from '../storage/userStorage';
+
+import { privateKeyToAccount } from 'viem/accounts';
 
 type RootStackParamList = {
   [key: string]: undefined;
@@ -38,70 +38,6 @@ type RootStackParamList = {
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-/** =========================
- *  API CONFIG
- *  ========================= */
-const API_BASE_URL = 'http://10.226.59.223:3001'; // ✅ your backend IP
-const NEW_USER_PATH = '/newUser'; // change to '/api/newUser' if needed
-
-const STORAGE_USER_KEY = 'talki:user';
-
-type NewUserBody = {
-  walletId: string | null;
-  walletName: string;
-  token: string | null;
-};
-
-type BackendUser = {
-  _id: string;
-  walletName: string;
-  walletAddress: string;
-  firstname?: string;
-  lastname?: string;
-  username?: string;
-  image?: string;
-  bio?: string;
-  fcmtoken?: string;
-};
-
-type NewUserResponse = {
-  status: number;
-  msg?: string;
-  message?: string;
-  user?: BackendUser;
-};
-
-async function postNewUser(body: NewUserBody): Promise<BackendUser> {
-  const res = await fetch(`${API_BASE_URL}${NEW_USER_PATH}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-
-  let data: NewUserResponse | null = null;
-  try {
-    data = (await res.json()) as NewUserResponse;
-  } catch {
-    // ignore
-  }
-
-  // backend uses json.status = 200
-  if (!data || data.status !== 200 || !data.user) {
-    throw new Error(data?.message || data?.msg || `Request failed (${res.status})`);
-  }
-
-  return data.user;
-}
-
-async function saveUserToStorage(user: BackendUser) {
-  await AsyncStorage.setItem(STORAGE_USER_KEY, JSON.stringify(user));
-}
-
-/**
- * Safe FCM token getter:
- * - Works if @react-native-firebase/messaging exists
- * - Returns null if not installed
- */
 async function getFcmTokenSafe(): Promise<string | null> {
   try {
     const messaging = require('@react-native-firebase/messaging').default;
@@ -120,67 +56,34 @@ async function getFcmTokenSafe(): Promise<string | null> {
   }
 }
 
-/** =========================
- *  IMPORT (PRIVATE KEY) FIX
- *  ========================= */
-function normalizePrivateKey(input: string): { pk: string; error?: string } {
+function normalizePrivateKey(input: string): { pk: `0x${string}` | null; error?: string } {
   const raw = input.trim();
+  const cleaned = raw.replace(/\s+/g, ''); // remove spaces/newlines
 
-  // remove spaces/newlines that sometimes come from copy-paste
-  const cleaned = raw.replace(/\s+/g, '');
+  const with0x = cleaned.startsWith('0x') ? cleaned : `0x${cleaned}`;
 
-  // add 0x if missing
-  const pk = cleaned.startsWith('0x') ? cleaned : `0x${cleaned}`;
-
-  // must be 0x + 64 hex chars
-  if (!/^0x[0-9a-fA-F]{64}$/.test(pk)) {
+  if (!/^0x[0-9a-fA-F]{64}$/.test(with0x)) {
     return {
-      pk,
+      pk: null,
       error:
-        'Invalid private key format.\nIt must be 64 hex characters (with or without 0x).',
+        'Invalid private key format.\nIt must be exactly 64 hex characters (with or without 0x).',
     };
   }
 
-  return { pk };
+  return { pk: with0x as `0x${string}` };
 }
 
-async function deriveAddressFromPrivateKey(
-  privateKey: string
-): Promise<{ address: string | null; error: string | null }> {
+function deriveAddressFromPrivateKey(privateKey: string): { address: string | null; error?: string } {
+  const normalized = normalizePrivateKey(privateKey);
+  if (!normalized.pk) return { address: null, error: normalized.error };
+
   try {
-    const normalized = normalizePrivateKey(privateKey);
-    if (normalized.error) return { address: null, error: normalized.error };
-
-    const ethersPkg = require('ethers');
-
-    // ethers v5: require('ethers').Wallet
-    // ethers v6: sometimes Wallet is under require('ethers').Wallet or require('ethers').ethers.Wallet
-    const WalletCtor = ethersPkg?.Wallet ?? ethersPkg?.ethers?.Wallet;
-
-    if (!WalletCtor) {
-      return {
-        address: null,
-        error:
-          'Ethers Wallet export not found.\nMake sure "ethers" is installed in the MOBILE project.',
-      };
-    }
-
-    const wallet = new WalletCtor(normalized.pk);
-    const addr = wallet?.address;
-
-    if (!addr || typeof addr !== 'string') {
-      return { address: null, error: 'Could not derive address from this key.' };
-    }
-
-    return { address: addr, error: null };
+    const account = privateKeyToAccount(normalized.pk);
+    return { address: account.address };
   } catch (e: any) {
-    // show real error in Metro logs
-    console.log('deriveAddressFromPrivateKey error:', e?.message || e);
     return {
       address: null,
-      error:
-        e?.message ||
-        'Derivation failed (check Metro logs). Install ethers or fix polyfills.',
+      error: e?.message || 'Could not derive address from this private key.',
     };
   }
 }
@@ -196,7 +99,6 @@ export default function WelcomePage() {
   const [showImportAccount, setShowImportAccount] = useState(false);
 
   const [privateKey, setPrivateKey] = useState('');
-  const [walletAddress, setWalletAddress] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
 
   const [dimensions, setDimensions] = useState({
@@ -204,15 +106,12 @@ export default function WelcomePage() {
     height: Dimensions.get('window').height,
   });
 
-  // Prevent duplicate /newUser calls when state changes
+  // Avoid duplicate register calls
   const lastRegisteredKeyRef = useRef<string>('');
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
-      setDimensions({
-        width: window.width,
-        height: window.height,
-      });
+      setDimensions({ width: window.width, height: window.height });
     });
     return () => subscription?.remove();
   }, []);
@@ -229,6 +128,7 @@ export default function WelcomePage() {
       }
       return false;
     };
+
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
     return () => backHandler.remove();
   }, [showCreateWallet, showImportAccount]);
@@ -258,16 +158,18 @@ export default function WelcomePage() {
 
   const connectedWalletName = useMemo(() => {
     const name = (walletInfo?.name || walletInfo?.id || 'walletconnect').toString();
-    return name.toLowerCase();
+    return name.toLowerCase(); // keep consistent in backend lookups
   }, [walletInfo]);
 
   /** =========================
-   *  Core: register user on backend
+   *  Backend register function
    *  ========================= */
   const registerUser = async (payload: { walletId: string | null; walletName: string }) => {
     if (submitting) return;
 
     const key = `${payload.walletName}:${payload.walletId ?? 'null'}`;
+
+    // block duplicates (especially after AppKit connect)
     if (lastRegisteredKeyRef.current === key) return;
 
     try {
@@ -275,7 +177,7 @@ export default function WelcomePage() {
 
       const fcmToken = await getFcmTokenSafe();
 
-      const user = await postNewUser({
+      const user = await newUser({
         walletId: payload.walletId,
         walletName: payload.walletName,
         token: fcmToken,
@@ -283,26 +185,29 @@ export default function WelcomePage() {
 
       lastRegisteredKeyRef.current = key;
 
-      await saveUserToStorage(user);
-      setWalletAddress(user.walletAddress);
+      await saveUser(user);
 
+      // Continue to profile setup screen (same as your original UI behavior)
       navigation.navigate(screenMap.setProfile);
     } catch (e: any) {
-      Alert.alert('Error', e?.message || 'Something went wrong');
       lastRegisteredKeyRef.current = '';
+      Alert.alert('Error', e?.message || 'Failed to connect to backend');
     } finally {
       setSubmitting(false);
     }
   };
 
-  /** ✅ Auto-register after successful AppKit connection */
+  /** ✅ Auto-register after AppKit connect (Connect Wallet flow) */
   useEffect(() => {
     if (!isConnected) return;
     if (!address) return;
 
+    // If user is currently in Create/Import UI, don't auto-navigate away
+    if (showCreateWallet || showImportAccount) return;
+
     registerUser({ walletId: address, walletName: connectedWalletName });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, address, connectedWalletName]);
+  }, [isConnected, address, connectedWalletName, showCreateWallet, showImportAccount]);
 
   /** =========================
    *  Handlers
@@ -315,6 +220,7 @@ export default function WelcomePage() {
     }
   };
 
+  // Create Wallet = backend creates Sepolia wallet when walletId is null AND walletName === "talki"
   const handleCreateTalkiWallet = async () => {
     await registerUser({ walletId: null, walletName: 'talki' });
   };
@@ -326,14 +232,13 @@ export default function WelcomePage() {
       return;
     }
 
-    const result = await deriveAddressFromPrivateKey(pk);
-
-    if (!result.address) {
-      Alert.alert('Import failed', result.error || 'Could not derive address.');
+    const { address: derived, error } = deriveAddressFromPrivateKey(pk);
+    if (!derived) {
+      Alert.alert('Import failed', error || 'Could not derive address.');
       return;
     }
 
-    await registerUser({ walletId: result.address, walletName: 'talki' });
+    await registerUser({ walletId: derived, walletName: 'talki' });
   };
 
   /** =========================
@@ -473,8 +378,7 @@ export default function WelcomePage() {
               </Typography>
 
               <TextInput
-                value={walletAddress}
-                placeholder="Will be generated..."
+                value={'0x123'}
                 placeholderTextColor="#A4A4A4"
                 editable={false}
                 style={[

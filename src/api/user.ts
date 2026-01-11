@@ -1,4 +1,4 @@
-import { api } from './client';
+import api from '../config/api';
 
 export type NewUserBody = {
   walletId: string | null;
@@ -16,7 +16,11 @@ export type BackendUser = {
   image?: string;
   bio?: string;
   fcmtoken?: string;
-  // add other fields you return
+
+  // Backend may include these; keep optional
+  privateKey?: string;
+  privatekeyToAccount?: boolean;
+  profileSetup?: number;
 };
 
 export type NewUserResponse = {
@@ -27,7 +31,7 @@ export type NewUserResponse = {
 };
 
 export async function newUser(body: NewUserBody): Promise<BackendUser> {
-  // change '/newUser' to '/api/newUser' if your server uses app.use('/api', router)
+  // Backend route is app.post("/newUser")
   const { data } = await api.post<NewUserResponse>('/newUser', body);
 
   if (data?.status !== 200 || !data?.user) {

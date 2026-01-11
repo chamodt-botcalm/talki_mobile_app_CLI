@@ -1,12 +1,11 @@
 import io from 'socket.io-client';
-
-const SOCKET_URL = 'http://localhost:3000'; // Change to your backend URL
+import { SOCKET_URL } from '../config/env';
 
 class SocketService {
   private socket: any = null;
 
   connect() {
-    this.socket = io(SOCKET_URL);
+    this.socket = io(SOCKET_URL, { transports: ['websocket'] });
     return this.socket;
   }
 
@@ -14,18 +13,6 @@ class SocketService {
     if (this.socket) {
       this.socket.disconnect();
       this.socket = null;
-    }
-  }
-
-  joinRoom(roomName: string) {
-    if (this.socket) {
-      this.socket.emit('join', roomName);
-    }
-  }
-
-  sendMessage(message: any) {
-    if (this.socket) {
-      this.socket.emit('message', message);
     }
   }
 
