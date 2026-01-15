@@ -17,6 +17,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -162,9 +163,9 @@ export default function WelcomePage() {
   }, [walletInfo]);
 
   /** =========================
-   *  Backend register function
+   *  Generate wallet locally & navigate to profile setup
    *  ========================= */
-  const registerUser = async (payload: { walletId: string | null; walletName: string }) => {
+  const handleWalletCreation = async (payload: { walletId: string | null; walletName: string }) => {
     if (submitting) return;
 
     const key = `${payload.walletName}:${payload.walletId ?? 'null'}`;
@@ -174,30 +175,40 @@ export default function WelcomePage() {
 
     try {
       setSubmitting(true);
-
-      const fcmToken = await getFcmTokenSafe();
-
-      const user = await newUser({
-        walletId: payload.walletId,
-        walletName: payload.walletName,
-        token: fcmToken,
-      });
-
       lastRegisteredKeyRef.current = key;
 
-      await saveUser(user);
+      // Generate wallet if needed (Create Wallet flow)
+      let walletAddress = payload.walletId;
+      if (payload.walletId == null && payload.walletName === 'talki') {
+        const web3 = require('web3').default;
+        const w3 = new web3('https://rpc.sepolia.org');
+        const account = w3.eth.accounts.create();
+        walletAddress = account.address;
+        // TODO: Store private key securely if needed
+      }
 
-      // Continue to profile setup screen (same as your original UI behavior)
+      // Get FCM token
+      const fcmToken = await getFcmTokenSafe();
+
+      // Save temporary wallet data to AsyncStorage for setProfile screen
+      const tempUserData = {
+        walletAddress: walletAddress || payload.walletId,
+        walletName: payload.walletName,
+        fcmtoken: fcmToken,
+      };
+      await AsyncStorage.setItem('talki:tempUser', JSON.stringify(tempUserData));
+
+      // Navigate to profile setup screen (user will fill details there)
       navigation.navigate(screenMap.setProfile);
     } catch (e: any) {
       lastRegisteredKeyRef.current = '';
-      Alert.alert('Error', e?.message || 'Failed to connect to backend');
+      Alert.alert('Error', e?.message || 'Failed to create wallet');
     } finally {
       setSubmitting(false);
     }
   };
 
-  /** ✅ Auto-register after AppKit connect (Connect Wallet flow) */
+  /** ✅ Auto-generate wallet & go to profile setup (no backend call yet) */
   useEffect(() => {
     if (!isConnected) return;
     if (!address) return;
@@ -205,7 +216,7 @@ export default function WelcomePage() {
     // If user is currently in Create/Import UI, don't auto-navigate away
     if (showCreateWallet || showImportAccount) return;
 
-    registerUser({ walletId: address, walletName: connectedWalletName });
+    handleWalletCreation({ walletId: address, walletName: connectedWalletName });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, address, connectedWalletName, showCreateWallet, showImportAccount]);
 
@@ -220,9 +231,9 @@ export default function WelcomePage() {
     }
   };
 
-  // Create Wallet = backend creates Sepolia wallet when walletId is null AND walletName === "talki"
+  // Create Wallet = locally generate Sepolia wallet and go to profile setup
   const handleCreateTalkiWallet = async () => {
-    await registerUser({ walletId: null, walletName: 'talki' });
+    await handleWalletCreation({ walletId: null, walletName: 'talki' });
   };
 
   const handleImportFromPrivateKey = async () => {
@@ -238,7 +249,7 @@ export default function WelcomePage() {
       return;
     }
 
-    await registerUser({ walletId: derived, walletName: 'talki' });
+    await handleWalletCreation({ walletId: derived, walletName: 'talki' });
   };
 
   /** =========================

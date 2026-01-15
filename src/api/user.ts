@@ -40,3 +40,21 @@ export async function newUser(body: NewUserBody): Promise<BackendUser> {
 
   return data.user;
 }
+export type UpdateUserBody = {
+  firstname?: string;
+  lastname?: string;
+  username?: string;
+  bio?: string;
+  image?: string;
+};
+
+export async function updateUser(userId: string, body: UpdateUserBody): Promise<BackendUser> {
+  // Backend route is app.post("/editUser/:id")
+  const { data } = await api.post<NewUserResponse>(`/editUser/${userId}`, body);
+
+  if (data?.status !== 200 || !data?.user) {
+    throw new Error(data?.message || data?.msg || 'Failed to update user');
+  }
+
+  return data.user;
+}
