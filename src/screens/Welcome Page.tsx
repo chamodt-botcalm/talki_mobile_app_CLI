@@ -30,6 +30,8 @@ import Button from '../components/reusable/Button';
 
 import { newUser } from '../api/user';
 import { saveUser } from '../storage/userStorage';
+import { useAppDispatch } from '../store/hooks';
+import { setUser } from '../store/userSlice';
 
 import { privateKeyToAccount } from 'viem/accounts';
 
@@ -91,6 +93,7 @@ function deriveAddressFromPrivateKey(privateKey: string): { address: string | nu
 
 export default function WelcomePage() {
   const navigation = useNavigation<NavigationProp>();
+  const dispatch = useAppDispatch();
 
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
@@ -249,7 +252,29 @@ export default function WelcomePage() {
       return;
     }
 
-    await handleWalletCreation({ walletId: derived, walletName: 'talki' });
+    try {
+      setSubmitting(true);
+
+      // Check if user exists in database
+      const { checkUserExists } = require('../api/user');
+      const existingUser = await checkUserExists(derived);
+
+      if (!existingUser) {
+        Alert.alert('Account Not Found', 'This wallet address does not exist in our database.');
+        return;
+      }
+
+      // Save user to storage and Redux
+      await saveUser(existingUser);
+      dispatch(setUser(existingUser));
+
+      // Navigate to main app
+      navigation.navigate(screenMap.mainTabs);
+    } catch (e: any) {
+      Alert.alert('Error', e?.message || 'Failed to import account');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   /** =========================

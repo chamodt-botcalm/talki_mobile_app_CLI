@@ -5,6 +5,8 @@ const config = {
     extraNodeModules: {
       crypto: require.resolve('react-native-get-random-values'),
     },
+    sourceExts: ['jsx', 'js', 'ts', 'tsx', 'cjs', 'json'],
+    unstable_enablePackageExports: true,
   },
 };
 

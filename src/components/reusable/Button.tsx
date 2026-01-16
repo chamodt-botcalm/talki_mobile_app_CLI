@@ -37,7 +37,7 @@ export default function Button({
         style,
       ]}
     >
-      <Typography center black semiBold style={{ fontSize }}>
+      <Typography center black semiBold style={{ fontSize: fontSize || 16 }}>
         {children}
       </Typography>
     </Pressable>

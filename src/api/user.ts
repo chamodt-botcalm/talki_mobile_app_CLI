@@ -58,3 +58,20 @@ export async function updateUser(userId: string, body: UpdateUserBody): Promise<
 
   return data.user;
 }
+
+export async function checkUserExists(walletAddress: string): Promise<BackendUser | null> {
+  try {
+    const { data } = await api.post<NewUserResponse>('/newUser', {
+      walletId: walletAddress,
+      walletName: 'imported',
+      token: null,
+    });
+
+    if (data?.status === 200 && data?.user) {
+      return data.user;
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+}

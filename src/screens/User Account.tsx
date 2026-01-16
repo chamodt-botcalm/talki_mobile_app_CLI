@@ -10,6 +10,8 @@ import { screenMap } from '../constants/screenMap';
 import Button from '../components/reusable/Button';
 import { newUser, updateUser } from '../api/user';
 import { saveUser } from '../storage/userStorage';
+import { useAppDispatch } from '../store/hooks';
+import { setUser } from '../store/userSlice';
 
 type RootStackParamList = {
   [key: string]: undefined;
@@ -18,6 +20,7 @@ type RootStackParamList = {
 export default function UserAccount() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const route = useRoute();
+    const dispatch = useAppDispatch();
 
     const [dimensions, setDimensions] = useState({
         width: Dimensions.get('window').width,
@@ -133,6 +136,9 @@ export default function UserAccount() {
 
             // Save to local storage
             await saveUser(updatedUser);
+
+            // Save to Redux
+            dispatch(setUser(updatedUser));
 
             // Clear temporary user data
             await AsyncStorage.removeItem('talki:tempUser');
