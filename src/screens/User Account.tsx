@@ -98,8 +98,8 @@ export default function UserAccount() {
     const handleDone = async () => {
         if (submitting) return;
         
-        if (!firstName.trim() || !lastName.trim() || !email.trim() || !username.trim()) {
-            Alert.alert('Missing Info', 'Please fill in all fields');
+        if (!firstName.trim() || !lastName.trim() || !username.trim()) {
+            Alert.alert('Missing Info', 'Please fill in all required fields');
             return;
         }
 
@@ -114,11 +114,6 @@ export default function UserAccount() {
             }
 
             const tempUser = JSON.parse(tempUserJson);
-            
-            if (!tempUser.walletAddress) {
-                Alert.alert('Error', 'Wallet address not found. Please try again.');
-                return;
-            }
 
             // Call backend /newUser with wallet details
             const user = await newUser({
@@ -132,6 +127,7 @@ export default function UserAccount() {
                 firstname: firstName,
                 lastname: lastName,
                 username: username,
+                bio: email, // Store email in bio field
             });
 
             // Save to local storage

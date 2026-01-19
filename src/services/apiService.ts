@@ -1,49 +1,15 @@
-import api from '../config/api';
+import axios from 'axios';
+import { API_BASE_URL } from '../config/env';
 
-/**
- * Keep your API calls grouped here.
- * Add more endpoints as you integrate screens.
- */
-
-export const authService = {
-  newUser: async (walletId: string | null, walletName: string, token: string | null) => {
-    const response = await api.post('/newUser', { walletId, walletName, token });
+export const updateFCMToken = async (userId: string, fcmToken: string) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/users/${userId}/fcm-token`, {
+      fcmtoken: fcmToken
+    });
+    console.log('FCM token updated successfully');
     return response.data;
-  },
-
-  getUserList: async (id: string) => {
-    const response = await api.get(`/getUserList?id=${encodeURIComponent(id)}`);
-    return response.data;
-  },
-
-  getUser: async (id: string) => {
-    const response = await api.get(`/getUser?id=${encodeURIComponent(id)}`);
-    return response.data;
-  },
-
-  getUserLedger: async (userid: string) => {
-    const response = await api.get(`/getUserLedger?userid=${encodeURIComponent(userid)}`);
-    return response.data;
-  },
-};
-
-export const chatService = {
-  sendMessage: async (messageData: any) => {
-    const response = await api.post('/sendMessage', messageData);
-    return response.data;
-  },
-
-  forwardMessage: async (senderid: string, recieverid: string, ids: string[]) => {
-    const response = await api.post('/forwardMessage', { senderid, recieverid, ids });
-    return response.data;
-  },
-
-  getChatHistory: async (senderid: string, recieverid: string) => {
-    const response = await api.get(
-      `/getChatHistory?senderid=${encodeURIComponent(senderid)}&recieverid=${encodeURIComponent(
-        recieverid
-      )}`
-    );
-    return response.data;
-  },
+  } catch (error) {
+    console.error('Failed to update FCM token:', error);
+    throw error;
+  }
 };
