@@ -63,7 +63,7 @@ async function getFcmTokenSafe(): Promise<string | null> {
  *  ========================= */
 function looksEncryptedPk(input: string) {
   const s = (input || '').trim().replace(/\s+/g, '');
-  return s.startsWith('talki');
+  return s.startsWith('U2FsdGVkX1');
 }
 
 function tryDecryptPkIfNeeded(input: string): { value: string; error?: string } {
