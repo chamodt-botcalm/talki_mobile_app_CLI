@@ -1,11 +1,40 @@
-
-import React, { useEffect, useState } from 'react';
-import { Animated, BackHandler, Dimensions, Image, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Animated,
+  BackHandler,
+  Dimensions,
+  Image,
+  Text,
+  View,
+  Pressable,
+  Alert,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useAppKit, useAccount } from '@reown/appkit-react-native';
+
 import { images } from '../constants/images';
+import { screenMap } from '../constants/screenMap';
+import { getFCMToken } from '../services/fcmService';
+import { newUser } from '../api/user';
+import { useAppDispatch } from '../store/hooks';
+import { setUser } from '../store/userSlice';
+import { saveUser } from '../storage/userStorage';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+  [key: string]: undefined;
+};
 
 export default function ConnectWallet() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const { open } = useAppKit();
+  const { address, isConnected } = useAccount();
+
+  const dispatch = useAppDispatch();
+
+  // Prevent duplicate calls when state updates/re-renders
+  const lastHandledAddressRef = useRef<string | null>(null);
 
   const [dimensions, setDimensions] = useState({
     width: Dimensions.get('window').width,
@@ -43,10 +72,47 @@ export default function ConnectWallet() {
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [slideAnim]);
 
-   
-  
+  useEffect(() => {
+    if (isConnected && address) {
+      if (lastHandledAddressRef.current === address) return;
+      lastHandledAddressRef.current = address;
+
+      handleWalletConnected(address);
+    } else {
+      lastHandledAddressRef.current = null;
+    }
+  }, [isConnected, address]);
+
+  const handleWalletConnected = async (walletAddress: string) => {
+    try {
+      const fcmToken = await getFCMToken();
+
+      const user = await newUser({
+        walletId: walletAddress,
+        walletName: 'imported',
+        token: fcmToken, // if this can be null in your app, handle it in getFCMToken() or backend
+      });
+
+      await saveUser(user);
+      dispatch(setUser(user));
+
+      if (user.profileSetup === 1) {
+        navigation.navigate(screenMap.mainTabs);
+      } else {
+        navigation.navigate(screenMap.userAccount);
+      }
+    } catch (error) {
+      console.error('Wallet connection error:', error);
+      Alert.alert('Error', 'Failed to connect wallet. Please try again.');
+    }
+  };
+
+  const handleConnectWallet = () => {
+    // You can also do: open({ view: 'Connect' })
+    open();
+  };
 
   // Base dimensions (mobile: w-430 h-932, tablet: w-834 h-1194)
   const BASE_WIDTH = 430;
@@ -54,181 +120,195 @@ export default function ConnectWallet() {
   const TABLET_WIDTH = 834;
   const TABLET_HEIGHT = 1194;
 
-  // Detect device type
-  const isTablet = dimensions.width >= 600 || dimensions.height >= 1000; // Rough threshold for tablet
-
-  // Use tablet base if detected
+  const isTablet = dimensions.width >= 600 || dimensions.height >= 1000;
   const currentBaseWidth = isTablet ? TABLET_WIDTH : BASE_WIDTH;
   const currentBaseHeight = isTablet ? TABLET_HEIGHT : BASE_HEIGHT;
 
-  // Detect orientation
-  const isLandscape = dimensions.width > dimensions.height;
-
-  // Scale functions
   const scaleWidth = (size: number) => (dimensions.width / currentBaseWidth) * size;
   const scaleHeight = (size: number) => (dimensions.height / currentBaseHeight) * size;
 
-  // Responsive scale factor (use the smaller scale to prevent overflow)
-  const scale = Math.min(
-    dimensions.width / currentBaseWidth,
-    dimensions.height / currentBaseHeight
-  );
-
   return (
-
-    <View style={{
-      backgroundColor: '#232323',
-      height: '100%',
-      width: '100%',
-    }}>
-      <Animated.View style={{
-        position: 'absolute',
-        bottom: 0,
-        height:isTablet?scaleHeight(954): scaleHeight(814),
+    <View
+      style={{
+        backgroundColor: '#232323',
+        height: '100%',
         width: '100%',
-        backgroundColor: '#FFFFFF',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        transform: [{ translateY: slideAnim }],
-      }}>
-        <View style={{
-          flexDirection: 'column',
-          alignItems: 'center',
-          marginTop: isTablet ? scaleHeight(106) : scaleHeight(53),
-        }}>
-
-          <Text style={{
-            fontSize:isTablet?62: 40,
-            fontWeight: 'bold',
-            marginBottom: 3,
-            fontFamily: 'Inter'
-          }}>
+      }}
+    >
+      <Animated.View
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          height: isTablet ? scaleHeight(954) : scaleHeight(814),
+          width: '100%',
+          backgroundColor: '#FFFFFF',
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+          transform: [{ translateY: slideAnim }],
+        }}
+      >
+        <View
+          style={{
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginTop: isTablet ? scaleHeight(106) : scaleHeight(53),
+          }}
+        >
+          <Text
+            style={{
+              fontSize: isTablet ? 62 : 40,
+              fontWeight: 'bold',
+              marginBottom: 3,
+              fontFamily: 'Inter',
+            }}
+          >
             Welcome
           </Text>
-          <Text style={{
-            fontSize: 14,
-            fontWeight: 500,
-            fontFamily: 'Inter',
-            marginBottom:isTablet?100: 90
-          }}>
+
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: '500', // ✅ string for TS
+              fontFamily: 'Inter',
+              marginBottom: isTablet ? 100 : 90,
+            }}
+          >
             Connect Your Wallet
           </Text>
         </View>
-        <View style={{
-          flexDirection: 'column',
-          gap:isTablet? 32: 25,
-          left: isTablet ? (dimensions.width - scaleWidth(490)) / 2 : (dimensions.width - scaleWidth(371)) / 2,
-        }}>
-          {/* MetaMask */}
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            position: 'relative'
-          }}>
-            <Image source={images.metamask} style={{
-              position: 'absolute',
-              left: scaleWidth(10),
-              zIndex: 1,
-              width: isTablet ? scaleWidth(30) : scaleWidth(24),
-              height: isTablet ? scaleHeight(30) : scaleHeight(24),
-              resizeMode: 'contain'
-            }} />
-            <TextInput placeholder='Metamask' placeholderTextColor='#A4A4A4'
+
+        <Pressable
+          onPress={handleConnectWallet}
+          style={{
+            alignSelf: 'center',
+            backgroundColor: '#007AFF',
+            paddingHorizontal: scaleWidth(40),
+            paddingVertical: scaleHeight(15),
+            borderRadius: 10,
+            marginBottom: scaleHeight(30),
+          }}
+        >
+          <Text
+            style={{
+              color: 'white',
+              fontSize: 16,
+              fontWeight: '600',
+              fontFamily: 'Inter',
+            }}
+          >
+            Connect Wallet
+          </Text>
+        </Pressable>
+
+        <View
+          style={{
+            flexDirection: 'column',
+            gap: isTablet ? 20 : 15,
+            left: isTablet
+              ? (dimensions.width - scaleWidth(490)) / 2
+              : (dimensions.width - scaleWidth(371)) / 2,
+          }}
+        >
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 14,
+              color: '#666',
+              fontFamily: 'Inter',
+              marginBottom: 10,
+            }}
+          >
+            Supported Wallets:
+          </Text>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              backgroundColor: '#F6F6F6',
+              borderColor: '#EEE7E7',
+              borderWidth: 1,
+              paddingLeft: scaleWidth(15),
+              paddingVertical: scaleHeight(12),
+              width: isTablet ? scaleWidth(490) : scaleWidth(371),
+              borderRadius: 10,
+            }}
+          >
+            <Image
+              source={images.metamask}
               style={{
-                backgroundColor: '#F6F6F6',
-                borderColor: '#EEE7E7',
-                borderWidth: 1,
-                paddingLeft: scaleWidth(50),
-                paddingVertical: isTablet ? scaleHeight(25) : scaleHeight(8),
-                width: isTablet ? scaleWidth(490) : scaleWidth(371),
-                borderRadius: 10,
-                height: scaleHeight(40)
-              }} />
+                width: isTablet ? scaleWidth(30) : scaleWidth(24),
+                height: isTablet ? scaleHeight(30) : scaleHeight(24),
+                resizeMode: 'contain',
+                marginRight: scaleWidth(15),
+              }}
+            />
+            <Text style={{ fontSize: 16, color: '#333', fontFamily: 'Inter' }}>
+              MetaMask
+            </Text>
           </View>
 
-          {/* Trust wallet */}
-          <View style={{
-            flexDirection: 'row',
-
-            alignItems: 'center',
-            position: 'relative'
-
-          }}>
-            <Image source={images.trustWallet} style={{
-              position: 'absolute',
-              left: scaleWidth(10),
-              zIndex: 1,
-              width: isTablet ? scaleWidth(30) : scaleWidth(24),
-              height: isTablet ? scaleHeight(30) : scaleHeight(24),
-              resizeMode: 'contain'
-            }} />
-            <TextInput placeholder='Trust wallet' placeholderTextColor='#A4A4A4'
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              backgroundColor: '#F6F6F6',
+              borderColor: '#EEE7E7',
+              borderWidth: 1,
+              paddingLeft: scaleWidth(15),
+              paddingVertical: scaleHeight(12),
+              width: isTablet ? scaleWidth(490) : scaleWidth(371),
+              borderRadius: 10,
+            }}
+          >
+            <Image
+              source={images.coinBase}
               style={{
-                backgroundColor: '#F6F6F6',
-                borderColor: '#EEE7E7',
-                borderWidth: 1,
-                paddingLeft: scaleWidth(50),
-                paddingVertical: isTablet ? scaleHeight(25) : scaleHeight(8),
-                width: isTablet ? scaleWidth(490) : scaleWidth(371),
-                borderRadius: 10,
-                height: scaleHeight(40)
-              }} />
+                width: isTablet ? scaleWidth(30) : scaleWidth(24),
+                height: isTablet ? scaleHeight(30) : scaleHeight(24),
+                resizeMode: 'contain',
+                marginRight: scaleWidth(15),
+              }}
+            />
+            <Text style={{ fontSize: 16, color: '#333', fontFamily: 'Inter' }}>
+              Coinbase Wallet
+            </Text>
           </View>
-          {/* Coinbase */}
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            position: 'relative'
-          }}>
-            <Image source={images.coinBase} style={{
-              position: 'absolute',
-              left: scaleWidth(10),
-              zIndex: 1,
-              width: isTablet ? scaleWidth(30) : scaleWidth(24),
-              height: isTablet ? scaleHeight(30) : scaleHeight(24),
-              resizeMode: 'contain'
-            }} />
-            <TextInput placeholder='Coinbase' placeholderTextColor='#A4A4A4'
+
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              backgroundColor: '#F6F6F6',
+              borderColor: '#EEE7E7',
+              borderWidth: 1,
+              paddingLeft: scaleWidth(15),
+              paddingVertical: scaleHeight(12),
+              width: isTablet ? scaleWidth(490) : scaleWidth(371),
+              borderRadius: 10,
+            }}
+          >
+            <View
               style={{
-                backgroundColor: '#F6F6F6',
-                borderColor: '#EEE7E7',
-                borderWidth: 1,
-                paddingLeft: scaleWidth(50),
-                paddingVertical: isTablet ? scaleHeight(25) : scaleHeight(8),
-                width: isTablet ? scaleWidth(490) : scaleWidth(371),
-                borderRadius: 10,
-                height: scaleHeight(40)
-              }} />
-          </View>
-          {/* Binance */}
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            position: 'relative'
-          }}>
-            <Image source={images.binance} style={{
-              position: 'absolute',
-              left: scaleWidth(10),
-              zIndex: 1,
-              width: isTablet ? scaleWidth(30) : scaleWidth(24),
-              height: isTablet ? scaleHeight(30) : scaleHeight(24),
-              resizeMode: 'contain'
-            }} />
-            <TextInput placeholder='Binance' placeholderTextColor='#A4A4A4'
-              style={{
-                backgroundColor: '#F6F6F6',
-                borderColor: '#EEE7E7',
-                borderWidth: 1,
-                paddingLeft: scaleWidth(50),
-                paddingVertical: isTablet ? scaleHeight(25) : scaleHeight(8),
-                width: isTablet ? scaleWidth(490) : scaleWidth(371),
-                borderRadius: 10,
-                height: scaleHeight(40)
-              }} />
+                width: isTablet ? scaleWidth(30) : scaleWidth(24),
+                height: isTablet ? scaleHeight(30) : scaleHeight(24),
+                backgroundColor: '#007AFF',
+                borderRadius: 12,
+                marginRight: scaleWidth(15),
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
+                +
+              </Text>
+            </View>
+            <Text style={{ fontSize: 16, color: '#333', fontFamily: 'Inter' }}>
+              Other Wallets
+            </Text>
           </View>
         </View>
       </Animated.View>
-
     </View>
-  )
+  );
 }

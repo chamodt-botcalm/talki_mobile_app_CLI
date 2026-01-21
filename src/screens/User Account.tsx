@@ -1,16 +1,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { Animated, BackHandler, Dimensions, Image, Pressable, Text, TextInput, View, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import BottomNavigator from '../components/BottomNavigator';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { images } from '../constants/images';
 import { screenMap } from '../constants/screenMap';
 import Button from '../components/reusable/Button';
-import { newUser, updateUser } from '../api/user';
+import { updateUser } from '../api/user';
 import { saveUser } from '../storage/userStorage';
-import { useAppDispatch } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setUser } from '../store/userSlice';
 
 type RootStackParamList = {
@@ -21,6 +20,7 @@ export default function UserAccount() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const route = useRoute();
     const dispatch = useAppDispatch();
+    const currentUser = useAppSelector(state => state.user.user);
 
     const [dimensions, setDimensions] = useState({
         width: Dimensions.get('window').width,
@@ -92,9 +92,6 @@ export default function UserAccount() {
         dimensions.height / currentBaseHeight
     );
 
-    /** =========================
-     *  Handle user profile submission
-     *  ========================= */
     const handleDone = async () => {
         if (submitting) return;
         
@@ -103,43 +100,23 @@ export default function UserAccount() {
             return;
         }
 
+        if (!currentUser) {
+            Alert.alert('Error', 'User data not found. Please try again.');
+            return;
+        }
+
         try {
             setSubmitting(true);
 
-            // Get temporary wallet data from AsyncStorage
-            const tempUserJson = await AsyncStorage.getItem('talki:tempUser');
-            if (!tempUserJson) {
-                Alert.alert('Error', 'Wallet data not found. Please try again.');
-                return;
-            }
-
-            const tempUser = JSON.parse(tempUserJson);
-
-            // Call backend /newUser with wallet details
-            const user = await newUser({
-                walletId: tempUser.walletAddress,
-                walletName: tempUser.walletName || 'talki',
-                token: tempUser.fcmtoken || null,
-            });
-
-            // Update user with profile details using /editUser/:id
-            const updatedUser = await updateUser(user._id, {
+            const updatedUser = await updateUser(currentUser._id, {
                 firstname: firstName,
                 lastname: lastName,
                 username: username,
-                bio: email, // Store email in bio field
+                bio: email,
             });
 
-            // Save to local storage
             await saveUser(updatedUser);
-
-            // Save to Redux
             dispatch(setUser(updatedUser));
-
-            // Clear temporary user data
-            await AsyncStorage.removeItem('talki:tempUser');
-
-            // Navigate to main tabs
             navigation.navigate(screenMap.mainTabs);
         } catch (e: any) {
             Alert.alert('Error', e?.message || 'Failed to save profile');
@@ -314,18 +291,19 @@ export default function UserAccount() {
                                 color: '#8C8C8C'
                             }}>Wallet Address</Text>
                             <TextInput 
+                                value={currentUser?.walletAddress || ''}
                                 editable={false}
                                 placeholder='0xb96cc255470............599' 
                                 placeholderTextColor={'#A4A4A4'} 
                                 style={{
                                     width: isTablet ? scaleWidth(491) : scaleWidth(371),
-                                    backgroundColor: '#F6F6F6',
+                                    backgroundColor: '#F0F0F0',
                                     borderRadius: 10,
                                     borderWidth: 1,
                                     borderColor: '#EEE7E7',
                                     paddingLeft: isTablet ? scaleWidth(17) : scaleWidth(13),
-                                    paddingVertical: isTablet ? scaleHeight(14) : scaleHeight(12)
-
+                                    paddingVertical: isTablet ? scaleHeight(14) : scaleHeight(12),
+                                    color: '#666'
                                 }} />
                         </View>
                     </View>
